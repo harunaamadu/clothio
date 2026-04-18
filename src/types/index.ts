@@ -201,7 +201,8 @@ export interface ProductFilters {
   category?: string;
   sub?: string;
   search?: string;
-  sale?: boolean;
+  inStock?: number;
+  onSale?: boolean;
   new?: boolean;
   minPrice?: number;
   maxPrice?: number;
@@ -209,6 +210,7 @@ export interface ProductFilters {
   colors?: string[];
   sort?: SortOption;
   page?: number;
+  perPage?: number;
   limit?: number;
 }
 

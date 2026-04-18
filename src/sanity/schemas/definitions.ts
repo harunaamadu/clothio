@@ -185,7 +185,6 @@ export const heroBanner = defineType({
       title: 'Desktop Image',
       type: 'image',
       options: { hotspot: true },
-      validation: (r) => r.required(),
     }),
     defineField({
       name: 'mobileImage',
