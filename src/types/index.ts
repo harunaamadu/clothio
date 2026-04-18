@@ -16,6 +16,7 @@ export interface User {
 export interface SanityImage {
   _type: "image";
   asset: {
+    url: string;
     _ref: string;
     _type: "reference";
   };
@@ -88,6 +89,7 @@ export interface HeroBanner {
   bgImage?: string;
   accentColor?: string;
   image?: SanityImage;
+  mobileImage?: SanityImage;
 }
 
 // ─── Cart ────────────────────────────────────────────────────────────────────

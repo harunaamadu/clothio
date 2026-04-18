@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Autoplay from "embla-carousel-autoplay";
 
 import {
@@ -15,7 +15,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/formatters";
 import type { HeroBanner } from "@/types";
@@ -28,11 +27,22 @@ interface HeroCarouselProps {
   banners: HeroBanner[];
 }
 
+const textVariants:Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay },
+  }),
+};
+
 export function HeroCarousel({ banners }: HeroCarouselProps) {
   const items = banners.length ? banners : FALLBACK_BANNERS;
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [showControls, setShowControls] = useState(false);
+  // animKey forces remount of motion elements on slide change
+  const [animKey, setAnimKey] = useState(0);
 
   const autoplay = useRef(
     Autoplay({
@@ -47,6 +57,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
 
     const updateCurrent = () => {
       setCurrent(api.selectedScrollSnap());
+      setAnimKey((k) => k + 1);
     };
 
     updateCurrent();
@@ -59,7 +70,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
 
   return (
     <section
-      className="layout group relative h-[85vh] max-h-160 min-h-150 overflow-hidden"
+      className="relative layout h-[85vh] max-h-160 min-h-150 overflow-hidden"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -72,57 +83,58 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
           backgroundSize: "128px",
         }}
       />
+
       <Carousel
         setApi={setApi}
-        opts={{
-          loop: true,
-          align: "start",
-        }}
+        opts={{ loop: true, align: "start" }}
         plugins={[autoplay.current]}
         className="h-full"
       >
         <CarouselContent className="h-full">
           {items.map((item, index) => {
-            const heroImage = item.bgImage || item.image?.url;
+            const heroImage = item.bgImage || item.image?.asset?.url;
+            const isActive = current === index;
 
             return (
-              <AnimatePresence mode="wait">
-                <CarouselItem
-                  key={index}
-                  className="h-full relative overflow-hidden"
-                >
-                  <div className="h-full py-12 md:py-16">
-                    <div className="h-full p-4 md:p-6">
-                      <div className="grid h-full items-center gap-10 lg:grid-cols-2">
-                        {/* Text */}
-                        <motion.div
+              <CarouselItem
+                key={index}
+                className="relative h-full overflow-hidden"
+              >
+                <div className="h-full py-12 md:py-16">
+                  <div className="h-full p-4 md:p-6">
+                    <div className="grid h-full items-center gap-10 lg:grid-cols-2">
+
+                      {/* Text — only animate when this slide is active */}
+                      {isActive && (
+                        <div
+                          key={animKey}
                           className="space-y-6 text-center lg:text-left"
-                          initial="hidden"
-                          animate="show"
-                          variants={{
-                            hidden: {},
-                            show: {
-                              transition: { staggerChildren: 0.12 },
-                            },
-                          }}
                         >
                           {item.badge && (
-                            <Badge
-                              className="inline-block text-xs font-semibold uppercase tracking-[0.2em]"
-                              style={{
-                                backgroundColor: `${item.accentColor ?? "#e94560"}15`,
-                                color: item.accentColor ?? "#e94560",
-                              }}
+                            <motion.div
+                              custom={0}
+                              variants={textVariants}
+                              initial="hidden"
+                              animate="show"
                             >
-                              {item.badge}
-                            </Badge>
+                              <Badge
+                                className="inline-block text-xs font-semibold uppercase tracking-[0.2em]"
+                                style={{
+                                  backgroundColor: `${item.accentColor ?? "#e94560"}15`,
+                                  color: item.accentColor ?? "#e94560",
+                                }}
+                              >
+                                {item.badge}
+                              </Badge>
+                            </motion.div>
                           )}
 
                           <motion.h1
-                            variants={{
-                              hidden: { opacity: 0, y: 30 },
-                              show: { opacity: 1, y: 0 },
-                            }}
+                            key={`title-${animKey}`}
+                            custom={0.1}
+                            variants={textVariants}
+                            initial="hidden"
+                            animate="show"
                             className="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-7xl"
                           >
                             {item.title}
@@ -130,10 +142,11 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
 
                           {item.description && (
                             <motion.p
-                              variants={{
-                                hidden: { opacity: 0, y: 30 },
-                                show: { opacity: 1, y: 0 },
-                              }}
+                              key={`desc-${animKey}`}
+                              custom={0.2}
+                              variants={textVariants}
+                              initial="hidden"
+                              animate="show"
                               className="mx-auto max-w-lg text-muted-foreground lg:mx-0"
                             >
                               {item.description}
@@ -141,32 +154,30 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                           )}
 
                           {item.startingPrice && (
-                            <motion.div
-                              variants={{
-                                hidden: { opacity: 0, y: 30 },
-                                show: { opacity: 1, y: 0 },
-                              }}
+                            <motion.p
+                              key={`price-${animKey}`}
+                              custom={0.3}
+                              variants={textVariants}
+                              initial="hidden"
+                              animate="show"
                               className="text-sm text-muted-foreground"
                             >
-                              <p className="text-sm text-muted-foreground">
-                                Starting at{" "}
-                                <em
-                                  className="text-xl not-italic font-bold"
-                                  style={{
-                                    color: item.acc entColor ?? "#e94560",
-                                  }}
-                                >
-                                  {formatPrice(item.startingPrice)}
-                                </em>
-                              </p>
-                            </motion.div>
+                              Starting at{" "}
+                              <em
+                                className="text-xl not-italic font-bold"
+                                style={{ color: item.accentColor ?? "#e94560" }}
+                              >
+                                {formatPrice(item.startingPrice)}
+                              </em>
+                            </motion.p>
                           )}
 
                           <motion.div
-                            variants={{
-                              hidden: { opacity: 0, y: 30 },
-                              show: { opacity: 1, y: 0 },
-                            }}
+                            key={`cta-${animKey}`}
+                            custom={0.4}
+                            variants={textVariants}
+                            initial="hidden"
+                            animate="show"
                           >
                             <Link
                               href={item.ctaLink}
@@ -183,43 +194,47 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                               />
                             </Link>
                           </motion.div>
-                        </motion.div>
+                        </div>
+                      )}
 
-                        {/* Image */}
-                        {heroImage && (
-                          <div className="absolute inset-0 w-[101%] hidden lg:block">
+                      {/* Spacer for inactive slides to preserve grid layout */}
+                      {!isActive && <div />}
+
+                      {/* Image */}
+                      {heroImage && (
+                        <div className="absolute inset-0 w-[101%] hidden lg:block">
+                          <motion.div
+                            key={`img-${animKey}`}
+                            initial={{ opacity: 0, x: 90 }}
+                            animate={{ opacity: 1, x: -10 }}
+                            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                            className="absolute inset-0 -z-10"
+                          >
                             <motion.div
-                              initial={{ opacity: 0, x: 90 }}
-                              animate={{ opacity: 1, x: -10 }}
-                              transition={{ duration: 0.8 }}
-                              className="absolute inset-0 -z-10"
+                              animate={{ y: [0, -12, 0] }}
+                              transition={{
+                                duration: 4,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                              className="relative h-full w-full"
                             >
-                              <motion.div
-                                animate={{ y: [0, -12, 0] }}
-                                transition={{
-                                  duration: 4,
-                                  repeat: Infinity,
-                                  ease: "easeInOut",
-                                }}
-                                className="relative h-full w-full"
-                              >
-                                <Image
-                                  src={heroImage}
-                                  alt={item.title}
-                                  fill
-                                  priority={index === 0}
-                                  sizes="100vw"
-                                  className="object-cover"
-                                />
-                              </motion.div>
+                              <Image
+                                src={heroImage}
+                                alt={item.title}
+                                fill
+                                priority={index === 0}
+                                sizes="100vw"
+                                className="object-cover"
+                              />
                             </motion.div>
-                          </div>
-                        )}
-                      </div>
+                          </motion.div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </CarouselItem>
-              </AnimatePresence>
+                </div>
+              </CarouselItem>
             );
           })}
         </CarouselContent>
@@ -227,16 +242,15 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
         {/* Prev / Next */}
         <CarouselPrevious
           className={cn(
-            "left-4 transition-all duration-300",
+            "left-4 z-20 transition-all duration-300",
             showControls
               ? "opacity-100 translate-x-0"
               : "pointer-events-none opacity-0 -translate-x-10",
           )}
         />
-
         <CarouselNext
           className={cn(
-            "right-4 transition-all duration-300",
+            "right-4 z-20 transition-all duration-300",
             showControls
               ? "opacity-100 translate-x-0"
               : "pointer-events-none opacity-0 translate-x-10",
@@ -245,7 +259,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
       </Carousel>
 
       {/* Dots */}
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
         {items.map((_, index) => (
           <button
             key={index}
