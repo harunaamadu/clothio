@@ -3,9 +3,15 @@
 import { useCartStore } from "@/store/cart.store";
 import { formatPrice } from "@/lib/formatters";
 import { CartItem } from "./CartItem";
-import { X, ShoppingBag, ArrowRight } from "lucide-react";
+// import { X, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  CancelIcon,
+  ShoppingBag01Icon,
+  ShoppingBasketCheckOut01Icon,
+} from "@hugeicons/core-free-icons";
 
 interface CartSheetProps {
   open: boolean;
@@ -29,13 +35,19 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
       <div
         className={cn(
           "fixed top-0 right-0 z-50 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col transition-transform duration-300",
-          open ? "translate-x-0" : "translate-x-full"
+          open ? "translate-x-0" : "translate-x-full",
         )}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#e4e4e7]">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#1a1a2e]" />
+            <HugeiconsIcon
+              icon={ShoppingBag01Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+              className="w-5 h-5 text-[#1a1a2e]"
+            />
             <h2 className="font-display font-semibold text-lg">
               Cart
               {itemCount > 0 && (
@@ -49,7 +61,13 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
             onClick={onClose}
             className="p-2 rounded-full hover:bg-[#f4f4f5] transition-colors"
           >
-            <X className="w-5 h-5" />
+            <HugeiconsIcon
+              icon={CancelIcon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+              className="w-5 h-5"
+            />
           </button>
         </div>
 
@@ -58,10 +76,18 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 px-5 text-center">
               <div className="w-16 h-16 rounded-full bg-[#f4f4f5] flex items-center justify-center">
-                <ShoppingBag className="w-7 h-7 text-[#a1a1aa]" />
+                <HugeiconsIcon
+                  icon={ShoppingBag01Icon}
+                  size={24}
+                  color="currentColor"
+                  strokeWidth={1.5}
+                  className="w-7 h-7 text-[#a1a1aa]"
+                />
               </div>
               <div>
-                <p className="font-medium text-[#18181b] mb-1">Your cart is empty</p>
+                <p className="font-medium text-[#18181b] mb-1">
+                  Your cart is empty
+                </p>
                 <p className="text-sm text-[#71717a]">
                   Add some products to get started
                 </p>
@@ -97,7 +123,9 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
               </div>
               <div className="flex justify-between font-semibold text-base text-[#18181b] pt-2 border-t border-[#e4e4e7]">
                 <span>Total</span>
-                <span>{formatPrice(subtotal + (subtotal >= 55 ? 0 : 5.99))}</span>
+                <span>
+                  {formatPrice(subtotal + (subtotal >= 55 ? 0 : 5.99))}
+                </span>
               </div>
             </div>
 
@@ -108,7 +136,14 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
                 onClick={onClose}
                 className="flex items-center justify-center gap-2 w-full bg-[#1a1a2e] hover:bg-[#e94560] text-white font-semibold text-sm py-3 rounded-full transition-colors"
               >
-                Checkout <ArrowRight className="w-4 h-4" />
+                Checkout 
+                <HugeiconsIcon
+                  icon={ShoppingBasketCheckOut01Icon}
+                  size={24}
+                  color="currentColor"
+                  strokeWidth={1.5}
+                  className="w-4 h-4"
+                />
               </Link>
               <Link
                 href="/cart"

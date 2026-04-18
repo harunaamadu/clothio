@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma/client";
+import prisma from "@/lib/prisma/client";
 
 export async function getCurrentUser() {
   const session = await auth();

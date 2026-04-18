@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowRight01Icon,
+  CancelIcon,
+  Menu01Icon,
+} from "@hugeicons/core-free-icons";
 
 interface NavLink {
   label: string;
@@ -22,7 +27,13 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
         onClick={() => setOpen(true)}
         aria-label="Open menu"
       >
-        <Menu className="w-5 h-5" />
+        <HugeiconsIcon
+          icon={Menu01Icon}
+          size={24}
+          color="currentColor"
+          strokeWidth={1.5}
+          className="w-5 h-5"
+        />
       </button>
 
       {/* Backdrop */}
@@ -37,7 +48,7 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
       <div
         className={cn(
           "fixed top-0 left-0 z-50 h-full w-72 bg-white shadow-2xl flex flex-col transition-transform duration-300",
-          open ? "translate-x-0" : "-translate-x-full"
+          open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex items-center justify-between p-4 border-b border-[#e4e4e7]">
@@ -48,7 +59,13 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
             onClick={() => setOpen(false)}
             className="p-1.5 rounded-md hover:bg-[#f4f4f5] transition-colors"
           >
-            <X className="w-5 h-5" />
+            <HugeiconsIcon
+              icon={CancelIcon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+              className="w-5 h-5"
+            />
           </button>
         </div>
 
@@ -58,14 +75,20 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
               {link.children ? (
                 <>
                   <button
-                    onClick={() => setExpanded(expanded === link.label ? null : link.label)}
+                    onClick={() =>
+                      setExpanded(expanded === link.label ? null : link.label)
+                    }
                     className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium hover:bg-[#f4f4f5] transition-colors"
                   >
                     {link.label}
-                    <ChevronRight
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      size={24}
+                      color="currentColor"
+                      strokeWidth={1.5}
                       className={cn(
                         "w-4 h-4 transition-transform",
-                        expanded === link.label && "rotate-90"
+                        expanded === link.label && "rotate-90",
                       )}
                     />
                   </button>
@@ -97,7 +120,7 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
                   onClick={() => setOpen(false)}
                   className={cn(
                     "block px-4 py-3 text-sm font-medium hover:bg-[#f4f4f5] transition-colors",
-                    link.label === "Sale" && "text-[#e94560]"
+                    link.label === "Sale" && "text-[#e94560]",
                   )}
                 >
                   {link.label}

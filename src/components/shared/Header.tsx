@@ -1,21 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useCartStore } from "@/store/cart.store";
 import { useWishlistStore } from "@/store/wishlist.store";
 import { CartSheet } from "@/components/cart/CartSheet";
 import { MobileNav } from "./MobileNav";
-import {
-  ShoppingBag,
-  Heart,
-  Search,
-  User,
-  ChevronDown,
-  LogOut,
-  LayoutDashboard,
-  Package,
-} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,128 +14,186 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { navLinks } from "@/lib/constants";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowDown01Icon,
+  FavouriteIcon,
+  Layout01Icon,
+  Logout01Icon,
+  PackageIcon,
+  Search01Icon,
+  Search02Icon,
+  ShoppingBag01Icon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "../ui/button";
+import Image from "next/image";
 
-const navLinks = [
-  { label: "Home", href: "/" },
-  {
-    label: "Men's",
-    href: "/products?category=mens",
-    children: [
-      { label: "Shirts", href: "/products?category=mens&sub=shirts" },
-      { label: "Shorts & Jeans", href: "/products?category=mens&sub=shorts" },
-      { label: "Jackets", href: "/products?category=mens&sub=jackets" },
-      { label: "Shoes", href: "/products?category=mens&sub=shoes" },
-    ],
-  },
-  {
-    label: "Women's",
-    href: "/products?category=womens",
-    children: [
-      { label: "Dresses", href: "/products?category=womens&sub=dresses" },
-      { label: "Tops", href: "/products?category=womens&sub=tops" },
-      { label: "Skirts", href: "/products?category=womens&sub=skirts" },
-      { label: "Bags", href: "/products?category=womens&sub=bags" },
-    ],
-  },
-  {
-    label: "Jewelry",
-    href: "/products?category=jewelry",
-    children: [
-      { label: "Earrings", href: "/products?category=jewelry&sub=earrings" },
-      { label: "Necklaces", href: "/products?category=jewelry&sub=necklaces" },
-      { label: "Rings", href: "/products?category=jewelry&sub=rings" },
-      { label: "Bracelets", href: "/products?category=jewelry&sub=bracelets" },
-    ],
-  },
-  { label: "Sale", href: "/products?sale=true" },
-];
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
+import { MegaMenu } from "./MegaMenu";
+import { DropDownMenu } from "./DropDownMenu";
 
 export function Header() {
   const { data: session } = useSession();
   const itemCount = useCartStore((s) => s.itemCount);
   const wishlistCount = useWishlistStore((s) => s.items.length);
   const [cartOpen, setCartOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+  // ── Scroll behaviour ───────────────────────────────────────────────────────
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  const pathname = usePathname();
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const handleScroll = useCallback(() => {
+    const y = window.scrollY;
+    const delta = y - lastScrollY.current;
+
+    setScrolled(y > 24);
+
+    if (y < 80) {
+      setHidden(false);
+    } else if (delta > 6) {
+      setHidden(true);
+    } else if (delta < -4) {
+      setHidden(false);
+    }
+
+    lastScrollY.current = y;
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  // ── Active-path check ──────────────────────────────────────────────────────
+  const isCurrentPath = useCallback(
+    (href: string) => pathname === href || pathname.startsWith(`${href}/`),
+    [pathname],
+  );
+
+  const categoriesLink = navLinks.find((link) => link.label === "Categories");
+
+  // Get all links that have children (for mega menu display)
+  const megaMenuLinks = navLinks.filter(
+    (link) => link.children && link.children.length > 0,
+  );
 
   return (
     <>
       {/* Top bar */}
-      <div className="bg-[#1a1a2e] text-white text-xs py-2 text-center">
-        Free shipping on orders over $55 &nbsp;·&nbsp;
-        <Link href="/products?sale=true" className="underline underline-offset-2 hover:text-[#f5a623] transition-colors">
+      <div className="layout flex items-center justify-center bg-muted text-xs py-2">
+        <span>Free shipping on orders over $55 &nbsp;·&nbsp;</span>
+        <Link
+          href="/products?sale=true"
+          className="inline-flex items-center gap-1 underline underline-offset-2 hover:text-primary transition-colors"
+        >
           Shop the Sale →
         </Link>
       </div>
 
       {/* Main header */}
-      <header
+      <motion.header
+        animate={{ y: hidden ? "-100%" : "0%" }}
+        transition={{ duration: 0.36, ease: [0.32, 0, 0.67, 0] }}
         className={cn(
-          "sticky top-0 z-50 bg-white border-b border-[#e4e4e7] transition-shadow duration-200",
-          scrolled && "shadow-md"
+          "sticky top-0 inset-x-0 z-100 transition-all duration-300 layer",
+          scrolled
+            ? "bg-background/75 backdrop-blur-md border-b border-neutral-100 shadow-sm shadow-black/4"
+            : "bg-background",
         )}
       >
-        <div className="container">
+        <div className="layout">
           <div className="flex items-center justify-between h-16 gap-4">
             {/* Mobile nav trigger */}
             <MobileNav navLinks={navLinks} />
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
-              <span className="font-display text-2xl font-bold text-[#1a1a2e] tracking-tight">
-                Clot<span className="text-[#e94560]">hio</span>
+              <span className="font-heading text-2xl font-bold tracking-tight">
+                Cloth<span className="text-primary">io</span>
               </span>
             </Link>
 
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) =>
-                link.children ? (
-                  <DropdownMenu key={link.label}>
-                    <DropdownMenuTrigger asChild>
-                      <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#18181b] hover:text-[#e94560] transition-colors rounded-md hover:bg-[#f4f4f5]">
-                        {link.label}
-                        <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-48">
-                      <DropdownMenuItem asChild>
-                        <Link href={link.href} className="font-medium">
-                          All {link.label}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      {link.children.map((child) => (
-                        <DropdownMenuItem key={child.label} asChild>
-                          <Link href={child.href}>{child.label}</Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : (
-                  <Link
+              {navLinks.map((link) => {
+                if (link.type === "mega") {
+                  return (
+                    <Drawer key={link.label} direction="top">
+                      <DrawerTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-sm font-medium"
+                        >
+                          {link.label}
+                        </Button>
+                      </DrawerTrigger>
+                      <MegaMenu />
+                    </Drawer>
+                  );
+                }
+
+                if (link.type === "dropdown" && link.children) {
+                  return (
+                    <DropDownMenu
+                      key={link.label}
+                      label={link.label}
+                      href={link.href}
+                      childrenLinks={link.children}
+                      isActive={isCurrentPath(link.href)}
+                    />
+                  );
+                }
+
+                return (
+                  <Button
                     key={link.label}
-                    href={link.href}
-                    className={cn(
-                      "px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                      link.label === "Sale"
-                        ? "text-[#e94560] hover:bg-red-50"
-                        : "text-[#18181b] hover:text-[#e94560] hover:bg-[#f4f4f5]"
-                    )}
+                    variant="ghost"
+                    size="sm"
+                    className="relative group p-0 text-sm font-medium"
                   >
-                    {link.label}
-                  </Link>
-                )
-              )}
+                    <Link
+                      href={link.href}
+                      className={cn(
+                        "px-3 py-2",
+                        link.label === "Sale"
+                          ? "text-rose-600 hover:bg-rose-50"
+                          : "hover:bg-muted",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+
+                    <span
+                      className={cn(
+                        "absolute bottom-0 right-0 h-0.5 w-0 bg-primary transition-all group-hover:w-full",
+                        isCurrentPath(link.href) && "w-full",
+                      )}
+                    />
+                  </Button>
+                );
+              })}
             </nav>
 
             {/* Right actions */}
@@ -153,7 +202,13 @@ export function Header() {
               <div className="relative">
                 {searchOpen ? (
                   <div className="flex items-center border border-[#e4e4e7] rounded-full px-3 py-1.5 bg-[#f4f4f5]">
-                    <Search className="w-4 h-4 text-[#71717a] shrink-0" />
+                    <HugeiconsIcon
+                      icon={Search01Icon}
+                      size={24}
+                      color="currentColor"
+                      strokeWidth={1.5}
+                      className="w-4 h-4 text-[#71717a] shrink-0"
+                    />
                     <input
                       autoFocus
                       value={searchQuery}
@@ -175,102 +230,163 @@ export function Header() {
                     />
                   </div>
                 ) : (
-                  <button
+                  <Button
                     onClick={() => setSearchOpen(true)}
-                    className="p-2 rounded-full hover:bg-[#f4f4f5] transition-colors"
                     aria-label="Search"
+                    variant="ghost"
+                    size="icon-lg"
                   >
-                    <Search className="w-5 h-5 text-[#18181b]" />
-                  </button>
+                    <HugeiconsIcon
+                      icon={Search02Icon}
+                      size={24}
+                      color="currentColor"
+                      strokeWidth={1.5}
+                      className="w-5 h-5 text-[#18181b]"
+                    />
+                  </Button>
                 )}
               </div>
 
               {/* Wishlist */}
-              <Link
-                href="/wishlist"
-                className="relative p-2 rounded-full hover:bg-[#f4f4f5] transition-colors"
+              <Button
+                // href="/wishlist"
                 aria-label="Wishlist"
+                variant="ghost"
+                size="icon-lg"
               >
-                <Heart className="w-5 h-5 text-[#18181b]" />
+                <HugeiconsIcon
+                  icon={FavouriteIcon}
+                  size={24}
+                  color="currentColor"
+                  strokeWidth={1.5}
+                  className="w-5 h-5 text-[#18181b]"
+                />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#e94560] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                     {wishlistCount > 9 ? "9+" : wishlistCount}
                   </span>
                 )}
-              </Link>
+              </Button>
 
               {/* Cart */}
-              <button
+              <Button
                 onClick={() => setCartOpen(true)}
-                className="relative p-2 rounded-full hover:bg-[#f4f4f5] transition-colors"
                 aria-label="Cart"
+                variant="ghost"
+                size="icon-lg"
               >
-                <ShoppingBag className="w-5 h-5 text-[#18181b]" />
+                <HugeiconsIcon
+                  icon={ShoppingBag01Icon}
+                  size={24}
+                  color="currentColor"
+                  strokeWidth={1.5}
+                  className="w-5 h-5 text-[#18181b]"
+                />
                 {itemCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#e94560] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                     {itemCount > 9 ? "9+" : itemCount}
                   </span>
                 )}
-              </button>
+              </Button>
 
               {/* User */}
-              {session ? (
+              {session?.user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 p-1.5 rounded-full hover:bg-[#f4f4f5] transition-colors">
+                    <Button
+                      aria-label="User Button"
+                      variant="ghost"
+                      size="icon-lg"
+                    >
                       {session.user.image ? (
-                        <img
+                        <Image
                           src={session.user.image}
                           alt={session.user.name ?? "User"}
                           className="w-7 h-7 rounded-full object-cover"
+                          width={28}
+                          height={28}
                         />
                       ) : (
-                        <div className="w-7 h-7 rounded-full bg-[#1a1a2e] flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-rose-700 flex items-center justify-center">
                           <span className="text-white text-xs font-medium">
                             {session.user.name?.[0]?.toUpperCase() ?? "U"}
                           </span>
                         </div>
                       )}
-                    </button>
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52">
                     <div className="px-3 py-2">
-                      <p className="text-sm font-medium truncate">{session.user.name}</p>
-                      <p className="text-xs text-[#71717a] truncate">{session.user.email}</p>
+                      <p className="text-sm font-medium truncate">
+                        {session.user.name}
+                      </p>
+                      <p className="text-xs text-[#71717a] truncate">
+                        {session.user.email}
+                      </p>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="flex items-center gap-2">
-                        <LayoutDashboard className="w-4 h-4" /> Dashboard
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2"
+                      >
+                        <HugeiconsIcon
+                          icon={Layout01Icon}
+                          size={24}
+                          color="currentColor"
+                          strokeWidth={1.5}
+                          className="w-4 h-4"
+                        />{" "}
+                        Dashboard
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/orders" className="flex items-center gap-2">
-                        <Package className="w-4 h-4" /> My Orders
+                        <HugeiconsIcon
+                          icon={PackageIcon}
+                          size={24}
+                          color="currentColor"
+                          strokeWidth={1.5}
+                          className="w-4 h-4"
+                        />{" "}
+                        My Orders
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => signOut({ callbackUrl: "/" })}
-                      className="text-[#e94560] focus:text-[#e94560] flex items-center gap-2"
+                      className="text-rose-600 focus:text-rose-400 flex items-center gap-2"
                     >
-                      <LogOut className="w-4 h-4" /> Sign Out
+                      <HugeiconsIcon
+                        icon={Logout01Icon}
+                        size={24}
+                        color="currentColor"
+                        strokeWidth={1.5}
+                        className="w-4 h-4"
+                      />{" "}
+                      Sign Out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md hover:bg-[#f4f4f5] transition-colors"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm font-medium hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 transition-all"
                 >
-                  <User className="w-4 h-4" />
+                  <HugeiconsIcon
+                    icon={UserIcon}
+                    size={24}
+                    color="currentColor"
+                    strokeWidth={1.5}
+                    className="w-4 h-4"
+                  />{" "}
                   Sign In
                 </Link>
               )}
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       <CartSheet open={cartOpen} onClose={() => setCartOpen(false)} />
     </>

@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, ShoppingBag, Eye } from "lucide-react";
 import { useCartStore } from "@/store/cart.store";
 import { useWishlistStore } from "@/store/wishlist.store";
-import { formatPrice, calculateDiscount } from "@/lib/utils/formatters";
-import { getImageUrl } from "@/lib/sanity/client";
+import { formatPrice, calculateDiscount } from "@/lib/formatters";
 import { StarRating } from "@/components/shared/StarRating";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
+import { getImageUrl } from "@/lib/sanity/client";
+import { Heart, ShoppingBag, Eye } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;

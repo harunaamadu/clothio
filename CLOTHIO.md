@@ -37,6 +37,8 @@ clothio/
 │   │   ├── Header.tsx                    ← Navbar: logo, search, nav, cart icon
 │   │   ├── Footer.tsx
 │   │   ├── MobileNav.tsx
+│   │   ├── MegaMenu.tsx
+│   │   ├── DropDownMenu.tsx
 │   │   └── Providers.tsx                 ← SessionProvider + ThemeProvider
 │   ├── home/
 │   │   ├── HeroCarousel.tsx              ← Embla carousel banners
