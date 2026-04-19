@@ -17,6 +17,7 @@ export interface SanityImage {
   _type: "image";
   asset: {
     url: string;
+    alt: string;
     _ref: string;
     _type: "reference";
   };
@@ -48,11 +49,13 @@ export interface ProductVariant {
   _key: string;
   size?: string;
   color?: string;
+  colorHex?: string;
+  price?: number;
   stock: number;
   sku?: string;
 }
 
-export interface Product {
+export interface  Product {
   _id: string;
   name: string;
   slug: { current: string };
@@ -70,6 +73,11 @@ export interface Product {
   rating?: number;
   reviewCount?: number;
   tags?: string[];
+
+  brand?: string;
+  material?: string;
+  careInstructions?: string;
+  
   _createdAt?: string;
   _updatedAt?: string;
 }
@@ -100,7 +108,7 @@ export interface CartItem {
   variantId?: string;
   name: string;
   slug: string;
-  image: string;
+  image: string | SanityImage | null;
   price: number;
   quantity: number;
   size?: string;
@@ -123,7 +131,7 @@ export interface OrderItem {
   productId: string;
   variantId?: string;
   name: string;
-  image: string;
+  image: string | SanityImage;
   price: number;
   quantity: number;
   size?: string;
@@ -192,6 +200,8 @@ export interface BlogPost {
 export type SortOption =
   | "featured"
   | "newest"
+  | "oldest"
+  | "name"
   | "price-asc"
   | "price-desc"
   | "rating"

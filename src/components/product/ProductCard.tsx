@@ -52,7 +52,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
   return (
     <div
       className={cn(
-        "group relative bg-white rounded-xl overflow-hidden border border-[#e4e4e7] hover:border-[#e94560]/30 hover:shadow-lg transition-all duration-300",
+        "group relative bg-white rounded-xl overflow-hidden border border-[#e4e4e7] hover:border-primary/30 hover:shadow-lg transition-all duration-300",
         className
       )}
     >
@@ -83,7 +83,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </span>
           )}
           {discount > 0 && (
-            <span className="bg-[#e94560] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+            <span className="bg-primary text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
               -{discount}%
             </span>
           )}
@@ -105,8 +105,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
             className={cn(
               "w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-colors",
               isWishlisted
-                ? "bg-[#e94560] text-white"
-                : "bg-white text-[#18181b] hover:bg-[#e94560] hover:text-white"
+                ? "bg-primary text-white"
+                : "bg-white text-[#18181b] hover:bg-primary hover:text-white"
             )}
             aria-label="Toggle wishlist"
           >
@@ -126,7 +126,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
           <button
             onClick={handleAddToCart}
-            className="w-full bg-[#1a1a2e] hover:bg-[#e94560] text-white text-xs font-semibold py-2.5 flex items-center justify-center gap-2 transition-colors"
+            className="w-full bg-[#1a1a2e] hover:bg-primary text-white text-xs font-semibold py-2.5 flex items-center justify-center gap-2 transition-colors"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
             Add to Cart
@@ -140,7 +140,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           {product.category?.name}
         </p>
         <Link href={`/products/${product.slug.current}`}>
-          <h3 className="text-sm font-medium text-[#18181b] line-clamp-1 hover:text-[#e94560] transition-colors">
+          <h3 className="text-sm font-medium text-[#18181b] line-clamp-1 hover:text-primary transition-colors">
             {product.name}
           </h3>
         </Link>

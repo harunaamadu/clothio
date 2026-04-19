@@ -34,7 +34,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
       {/* Drawer */}
       <div
         className={cn(
-          "fixed top-0 right-0 z-50 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col transition-transform duration-300",
+          "fixed top-0 right-0 z-110 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col transition-transform duration-300",
           open ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -94,7 +94,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
               </div>
               <button
                 onClick={onClose}
-                className="mt-2 bg-[#1a1a2e] text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-[#e94560] transition-colors"
+                className="mt-2 bg-[#1a1a2e] text-white text-sm font-medium px-6 py-2.5 hover:bg-primary transition-colors"
               >
                 Continue Shopping
               </button>
@@ -134,7 +134,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
               <Link
                 href="/checkout"
                 onClick={onClose}
-                className="flex items-center justify-center gap-2 w-full bg-[#1a1a2e] hover:bg-[#e94560] text-white font-semibold text-sm py-3 rounded-full transition-colors"
+                className="flex items-center justify-center gap-2 w-full bg-[#1a1a2e] hover:bg-primary text-white font-semibold text-sm py-3 transition-colors"
               >
                 Checkout 
                 <HugeiconsIcon
@@ -148,7 +148,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
               <Link
                 href="/cart"
                 onClick={onClose}
-                className="flex items-center justify-center w-full border border-[#e4e4e7] hover:border-[#1a1a2e] text-[#18181b] font-medium text-sm py-3 rounded-full transition-colors"
+                className="flex items-center justify-center w-full border border-[#e4e4e7] hover:border-[#1a1a2e] text-[#18181b] font-medium text-sm py-3 transition-colors"
               >
                 View Cart
               </Link>

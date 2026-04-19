@@ -20,7 +20,7 @@ export function CartItem({ item }: { item: CartItemType }) {
       {/* Image */}
       <Link href={`/products/${item.slug}`} className="shrink-0">
         <div
-          className="w-18 h-22 relative rounded-lg overflow-hidden bg-[#f4f4f5]"
+          className="w-18 h-22 relative overflow-hidden bg-[#f4f4f5]"
           style={{ width: 72, height: 88 }}
         >
           {item.image ? (
@@ -40,7 +40,7 @@ export function CartItem({ item }: { item: CartItemType }) {
       {/* Details */}
       <div className="flex-1 min-w-0">
         <Link href={`/products/${item.slug}`}>
-          <p className="text-sm font-medium text-[#18181b] line-clamp-2 hover:text-[#e94560] transition-colors leading-snug">
+          <p className="text-sm font-medium text-[#18181b] line-clamp-2 hover:text-primary transition-colors leading-snug">
             {item.name}
           </p>
         </Link>
@@ -92,7 +92,7 @@ export function CartItem({ item }: { item: CartItemType }) {
       <div className="flex flex-col items-end justify-between">
         <button
           onClick={() => removeItem(item.id)}
-          className="p-1 text-[#a1a1aa] hover:text-[#e94560] transition-colors"
+          className="p-1 text-[#a1a1aa] hover:text-primary transition-colors"
           aria-label="Remove item"
         >
           <HugeiconsIcon

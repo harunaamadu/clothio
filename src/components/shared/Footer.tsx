@@ -62,15 +62,15 @@ export function Footer() {
               </p>
               <div className="space-y-2 text-sm text-white/60">
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 shrink-0 text-[#e94560]" />
+                  <MapPin className="w-4 h-4 shrink-0 text-primary" />
                   123 Fashion Ave, New York, NY 10001
                 </div>
                 <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 shrink-0 text-[#e94560]" />
+                  <Phone className="w-4 h-4 shrink-0 text-primary" />
                   +1 (555) 123-4567
                 </div>
                 <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 shrink-0 text-[#e94560]" />
+                  <Mail className="w-4 h-4 shrink-0 text-primary" />
                   hello@clothio.com
                 </div>
               </div>
@@ -116,7 +116,7 @@ export function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#e94560] flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors"
                 >
                   <Icon className="w-3.5 h-3.5" />
                 </Link>

@@ -224,7 +224,7 @@ export async function CategoryCarousel() {
                           ) : (
                             <>
                               <div
-                                className="w-14 h-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-200 shrink-0"
+                                className="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform duration-200 shrink-0"
                                 style={{ backgroundColor: `${accent.text}1a` }}
                               >
                                 <CategoryIcon

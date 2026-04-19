@@ -23,7 +23,7 @@ export function OAuthButtons({ label = "Sign in", callbackUrl = "/" }: OAuthButt
       type="button"
       onClick={handleGoogle}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-3 border border-[#e4e4e7] bg-white hover:bg-[#f9f9f9] disabled:opacity-60 disabled:cursor-not-allowed text-[#18181b] font-medium text-sm py-2.5 rounded-xl transition-colors"
+      className="w-full flex items-center justify-center gap-3 border border-[#e4e4e7] bg-white hover:bg-[#f9f9f9] disabled:opacity-60 disabled:cursor-not-allowed text-[#18181b] font-medium text-sm py-2.5 transition-colors"
     >
       {loading ? (
         <Loader2 className="w-4 h-4 animate-spin text-[#71717a]" />

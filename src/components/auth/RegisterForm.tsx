@@ -89,7 +89,7 @@ export function RegisterForm() {
 
       {/* Server error banner */}
       {serverError && (
-        <p className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+        <p className="bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
           {serverError}
         </p>
       )}
@@ -107,7 +107,7 @@ export function RegisterForm() {
             placeholder="Jane Smith"
             {...register("name")}
             className={cn(
-              "w-full rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors",
+              "w-full border bg-white px-4 py-2.5 text-sm outline-none transition-colors",
               "placeholder:text-[#a1a1aa] focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10",
               errors.name
                 ? "border-red-400 focus:border-red-400 focus:ring-red-100"
@@ -131,7 +131,7 @@ export function RegisterForm() {
             placeholder="you@example.com"
             {...register("email")}
             className={cn(
-              "w-full rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors",
+              "w-full border bg-white px-4 py-2.5 text-sm outline-none transition-colors",
               "placeholder:text-[#a1a1aa] focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10",
               errors.email
                 ? "border-red-400 focus:border-red-400 focus:ring-red-100"
@@ -156,7 +156,7 @@ export function RegisterForm() {
               placeholder="••••••••"
               {...register("password")}
               className={cn(
-                "w-full rounded-xl border bg-white px-4 py-2.5 pr-11 text-sm outline-none transition-colors",
+                "w-full border bg-white px-4 py-2.5 pr-11 text-sm outline-none transition-colors",
                 "placeholder:text-[#a1a1aa] focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10",
                 errors.password
                   ? "border-red-400 focus:border-red-400 focus:ring-red-100"
@@ -199,7 +199,7 @@ export function RegisterForm() {
               placeholder="••••••••"
               {...register("confirmPassword")}
               className={cn(
-                "w-full rounded-xl border bg-white px-4 py-2.5 pr-11 text-sm outline-none transition-colors",
+                "w-full border bg-white px-4 py-2.5 pr-11 text-sm outline-none transition-colors",
                 "placeholder:text-[#a1a1aa] focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10",
                 errors.confirmPassword
                   ? "border-red-400 focus:border-red-400 focus:ring-red-100"
@@ -224,7 +224,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full flex items-center justify-center gap-2 bg-[#1a1a2e] hover:bg-[#e94560] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm py-3 rounded-xl transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-[#1a1a2e] hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm py-3 transition-colors"
         >
           {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
           {isSubmitting ? "Creating account…" : "Create account"}

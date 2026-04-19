@@ -53,7 +53,7 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
       >
         <div className="flex items-center justify-between p-4 border-b border-[#e4e4e7]">
           <span className="font-display text-xl font-bold text-[#1a1a2e]">
-            Clot<span className="text-[#e94560]">hio</span>
+            Clot<span className="text-primary">hio</span>
           </span>
           <button
             onClick={() => setOpen(false)}
@@ -97,7 +97,7 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
                       <Link
                         href={link.href}
                         onClick={() => setOpen(false)}
-                        className="block px-8 py-2.5 text-sm font-medium hover:text-[#e94560] transition-colors"
+                        className="block px-8 py-2.5 text-sm font-medium hover:text-primary transition-colors"
                       >
                         All {link.label}
                       </Link>
@@ -106,7 +106,7 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
                           key={child.label}
                           href={child.href}
                           onClick={() => setOpen(false)}
-                          className="block px-8 py-2.5 text-sm text-[#71717a] hover:text-[#e94560] transition-colors"
+                          className="block px-8 py-2.5 text-sm text-[#71717a] hover:text-primary transition-colors"
                         >
                           {child.label}
                         </Link>
@@ -120,7 +120,7 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
                   onClick={() => setOpen(false)}
                   className={cn(
                     "block px-4 py-3 text-sm font-medium hover:bg-[#f4f4f5] transition-colors",
-                    link.label === "Sale" && "text-[#e94560]",
+                    link.label === "Sale" && "text-primary",
                   )}
                 >
                   {link.label}
@@ -141,7 +141,7 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
           <Link
             href="/register"
             onClick={() => setOpen(false)}
-            className="block w-full text-center py-2.5 text-sm font-medium bg-[#e94560] text-white rounded-full hover:bg-[#d63651] transition-colors"
+            className="block w-full text-center py-2.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-[#d63651] transition-colors"
           >
             Create Account
           </Link>

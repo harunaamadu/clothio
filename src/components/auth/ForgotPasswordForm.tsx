@@ -38,7 +38,7 @@ export function ForgotPasswordForm() {
   if (submitted) {
     return (
       <div className="text-center space-y-5 py-4">
-        <div className="mx-auto w-16 h-16 rounded-full bg-green-50 border border-green-100 flex items-center justify-center">
+        <div className="mx-auto w-16 h-16 bg-green-50 border border-green-100 flex items-center justify-center">
           <MailCheck className="w-7 h-7 text-green-600" />
         </div>
         <div className="space-y-1">
@@ -54,7 +54,7 @@ export function ForgotPasswordForm() {
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="text-[#e94560] hover:underline underline-offset-4 font-medium"
+            className="text-primary hover:underline underline-offset-4 font-medium"
           >
             try again
           </button>
@@ -78,7 +78,7 @@ export function ForgotPasswordForm() {
           placeholder="you@example.com"
           {...register("email")}
           className={cn(
-            "w-full rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors",
+            "w-full border bg-white px-4 py-2.5 text-sm outline-none transition-colors",
             "placeholder:text-[#a1a1aa] focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10",
             errors.email
               ? "border-red-400 focus:border-red-400 focus:ring-red-100"
@@ -93,7 +93,7 @@ export function ForgotPasswordForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full flex items-center justify-center gap-2 bg-[#1a1a2e] hover:bg-[#e94560] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm py-3 rounded-xl transition-colors"
+        className="w-full flex items-center justify-center gap-2 bg-[#1a1a2e] hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm py-3 transition-colors"
       >
         {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
         {isSubmitting ? "Sending…" : "Send reset link"}
