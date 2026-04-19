@@ -1,4 +1,4 @@
-import { HeroBanner } from "@/types";
+import { SanityImage } from "@/types";
 
 type NavlinkProps = {
   label: string;
@@ -56,21 +56,24 @@ export const navLinks:NavlinkProps[] = [
   { label: "Sale", href: "/products?sale=true", type: "link" },
 ];
 
-// type FallbackImageProps = {
-//   _id: string;
-//   title: string;
-//   subtitle?: string;
-//   description?: string;
-//   ctaText: string;
-//   ctaLink: string;
-//   badge?: string;
-//   startingPrice?: number;
-//   bgColor?: string;
-//   bgImage?: string;
-//   accentColor?: string;
-// }
+interface HeroBanner {
+  _id: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  ctaText: string;
+  ctaLink: string;
+  badge?: string;
+  startingPrice?: number;
+  bgColor?: string;
+  accentColor?: string;
+  image?: SanityImage;
+  bgImage?: SanityImage;
+  bgImageUrl?: string;
+  mobileImage?: SanityImage;
+}
 
-export const FALLBACK_BANNERS:HeroBanner[] = [
+export const FALLBACK_BANNERS: HeroBanner[] = [
   {
     _id: "1",
     title: "Women's Latest\nFashion Sale",
@@ -81,7 +84,7 @@ export const FALLBACK_BANNERS:HeroBanner[] = [
     badge: "Trending item",
     startingPrice: 20,
     bgColor: "#fdf2f0",
-    bgImage: "/assets/banner/trending_women.jpg",
+    bgImageUrl: "/assets/banner/trending_women.jpg",
     accentColor: "#e94560",
   },
   {
@@ -94,7 +97,7 @@ export const FALLBACK_BANNERS:HeroBanner[] = [
     badge: "Trending accessories",
     startingPrice: 15,
     bgColor: "#f0f4fd",
-    bgImage: "/assets/banner/sunglasses_banner.jpg",
+    bgImageUrl: "/assets/banner/sunglasses_banner.jpg",
     accentColor: "#1a1a2e",
   },
   {
@@ -107,7 +110,7 @@ export const FALLBACK_BANNERS:HeroBanner[] = [
     badge: "Sale Offer",
     startingPrice: 29.99,
     bgColor: "#f0fdf4",
-    bgImage: "/assets/banner/new_fashion.jpg",
+    bgImageUrl: "/assets/banner/new_fashion.jpg",
     accentColor: "#22c55e",
   },
 ];

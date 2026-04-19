@@ -86,9 +86,9 @@ export interface HeroBanner {
   badge?: string;
   startingPrice?: number;
   bgColor?: string;
-  bgImage?: string;
   accentColor?: string;
   image?: SanityImage;
+  bgImage?: SanityImage;
   mobileImage?: SanityImage;
 }
 

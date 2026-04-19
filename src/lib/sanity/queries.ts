@@ -363,7 +363,7 @@ export async function getHeroBanners(): Promise<HeroBanner[]> {
       startingPrice,
       ctaText,
       ctaLink,
-      image ${IMAGE_PROJECTION},
+      bgImage ${IMAGE_PROJECTION},
       mobileImage ${IMAGE_PROJECTION},
       bgColor,
       accentColor,

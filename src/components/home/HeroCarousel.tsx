@@ -22,12 +22,13 @@ import { FALLBACK_BANNERS } from "@/lib/constants";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight04Icon } from "@hugeicons/core-free-icons";
 import { Badge } from "../ui/badge";
+import { urlFor } from "@/lib/sanity/client";
 
 interface HeroCarouselProps {
   banners: HeroBanner[];
 }
 
-const textVariants:Variants = {
+const textVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
   show: (delay: number) => ({
     opacity: 1,
@@ -41,7 +42,6 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [showControls, setShowControls] = useState(false);
-  // animKey forces remount of motion elements on slide change
   const [animKey, setAnimKey] = useState(0);
 
   const autoplay = useRef(
@@ -92,18 +92,20 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
       >
         <CarouselContent className="h-full">
           {items.map((item, index) => {
-            const heroImage = item.bgImage || item.image?.asset?.url;
+            const heroImage = item.bgImage?.asset
+              ? urlFor(item.bgImage).width(1400).quality(90).url()
+              : null;
+
             const isActive = current === index;
 
             return (
               <CarouselItem
                 key={index}
-                className="relative h-full overflow-hidden"
+                className="relative h-full overflow-hidden bg-cover bg-center"
               >
                 <div className="h-full py-12 md:py-16">
                   <div className="h-full p-4 md:p-6">
                     <div className="grid h-full items-center gap-10 lg:grid-cols-2">
-
                       {/* Text — only animate when this slide is active */}
                       {isActive && (
                         <div
@@ -207,7 +209,10 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                             key={`img-${animKey}`}
                             initial={{ opacity: 0, x: 90 }}
                             animate={{ opacity: 1, x: -10 }}
-                            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                            transition={{
+                              duration: 0.8,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
                             className="absolute inset-0 -z-10"
                           >
                             <motion.div
@@ -265,9 +270,9 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
             key={index}
             onClick={() => api?.scrollTo(index)}
             className={cn(
-              "h-2 rounded-full transition-all duration-300",
+              "h-2 transition-all hover:cursor-pointer duration-300",
               current === index
-                ? "w-8 bg-primary"
+                ? "w-8 bg-primary hover:bg-primary/80"
                 : "w-2 bg-black/20 hover:bg-black/40",
             )}
           />
