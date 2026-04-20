@@ -4,24 +4,25 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight01Icon, StarIcon } from "@hugeicons/core-free-icons";
 import Title from "../ui/title";
+import { product } from "@/sanity/schemas/schema";
 
-interface FeaturedProductsProps {
+interface NewArrivalsProps {
   products: Product[];
 }
 
-export function FeaturedProducts({ products }: FeaturedProductsProps) {
+export function NewArrivals({ products }: NewArrivalsProps) {
   if (!products.length) {
     return (
-      <section className="py-12 md:py-16 text-stone-700 bg-stone-50 dark:bg-stone-800 dark:text-stone-50">
+      <section className="py-12 md:py-16">
         <div className="layout">
           <Title
-            title="Featured Products"
+            title="New Arrivals"
             eyebrow="Handpicked Coming Soon"
-            description="Oops! It looks like we don't have any featured products at the moment. We're working hard to curate a selection of items we think you'll love, so please check back soon!"
+            description="Oops! It looks like we don't have any new arrivals at the moment. We're working hard to curate a selection of items we think you'll love, so please check back soon!"
           />
 
           <div className="flex items-center justify-center border border-dashed border-border/80 py-16 text-sm text-stone-500">
-            No featured products at the moment — please check back soon.
+            No new arrivals at the moment — please check back soon.
           </div>
         </div>
       </section>
@@ -29,13 +30,13 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
   }
 
   return (
-    <section className="py-12 md:py-16 text-stone-700 bg-stone-50 dark:bg-stone-800 dark:text-stone-50">
+    <section className="py-12 md:py-16">
       <div className="layout">
         {/* Header */}
         <Title
-          title="Featured Products"
-          eyebrow="Handpicked"
-          href="/products?featured=true"
+          title="New Arrivals"
+          eyebrow="Just In"
+          href="/products?new=true"
           description="Hand picked product you will like to have."
         />
 
@@ -49,10 +50,10 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
         {/* Mobile CTA */}
         <div className="mt-8 flex justify-center sm:hidden">
           <Link
-            href="/products?featured=true"
+            href="/products?new=true"
             className="inline-flex items-center gap-2 px-6 py-3 border border-[#1a1a2e] text-sm font-semibold text-[#1a1a2e] hover:bg-[#1a1a2e] hover:text-white transition-colors rounded-xl"
           >
-            View all featured
+            View all new arrivals
             <HugeiconsIcon icon={ArrowRight01Icon} size={16} strokeWidth={2} />
           </Link>
         </div>

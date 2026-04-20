@@ -5,23 +5,23 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight01Icon, StarIcon } from "@hugeicons/core-free-icons";
 import Title from "../ui/title";
 
-interface FeaturedProductsProps {
+interface BestSellersProps {
   products: Product[];
 }
 
-export function FeaturedProducts({ products }: FeaturedProductsProps) {
+export function BestSellers({ products }: BestSellersProps) {
   if (!products.length) {
     return (
       <section className="py-12 md:py-16 text-stone-700 bg-stone-50 dark:bg-stone-800 dark:text-stone-50">
         <div className="layout">
           <Title
-            title="Featured Products"
+            title="Best Sellers"
             eyebrow="Handpicked Coming Soon"
-            description="Oops! It looks like we don't have any featured products at the moment. We're working hard to curate a selection of items we think you'll love, so please check back soon!"
+            description="Oops! It looks like we don't have any best sellers at the moment. We're working hard to curate a selection of items we think you'll love, so please check back soon!"
           />
 
           <div className="flex items-center justify-center border border-dashed border-border/80 py-16 text-sm text-stone-500">
-            No featured products at the moment — please check back soon.
+            No best sellers at the moment — please check back soon.
           </div>
         </div>
       </section>
@@ -33,9 +33,9 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
       <div className="layout">
         {/* Header */}
         <Title
-          title="Featured Products"
+          title="Best Sellers"
           eyebrow="Handpicked"
-          href="/products?featured=true"
+          href="/products?bestSellers=true"
           description="Hand picked product you will like to have."
         />
 

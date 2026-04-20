@@ -17,17 +17,18 @@ const Title = ({ title, eyebrow, description, href }: TitleProps) => {
         <div className="grid md:grid-cols-[1fr_auto] items-end w-full h-fit">
           <div className="h-auto py-0!">
             <p
-              className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-widest text-primary mb-1"
+              className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-primary mb-1"
               data-reveal
             >
               <span className="block w-10 h-px bg-primary my-auto" />{" "}
-              <span>{eyebrow}</span>
+              <span>{eyebrow}</span>{" "}
+              <span className="block w-10 h-px bg-primary my-auto" />
             </p>
-            <h1 className="text-4xl font-bold mb-4 capitalize" data-reveal>
+            <h1 className="text-2xl font-bold mb-2 capitalize" data-reveal>
               {title || "Title goes here"}
             </h1>
             {description && (
-              <div className="text-base" data-reveal>
+              <div className="text-base w-2xl max-w-screen" data-reveal>
                 {description}
               </div>
             )}
