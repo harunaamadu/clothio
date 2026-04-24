@@ -16,8 +16,8 @@ export interface User {
 export interface SanityImage {
   _type: "image";
   asset: {
-    url: string;
-    alt: string;
+    url?: string;
+    alt?: string;
     _ref: string;
     _type: "reference";
   };
@@ -38,11 +38,12 @@ export interface SanityImage {
 // ─── Product ─────────────────────────────────────────────────────────────────
 
 export interface ProductCategory {
-  _id: string;
+  _id: string | any;
   name: string;
   slug: { current: string };
   description?: string;
   image?: SanityImage;
+  parentCategory?: { _id: string; name: string; slug: { current: string } };
 }
 
 export interface ProductVariant {
@@ -82,6 +83,25 @@ export interface  Product {
   _updatedAt?: string;
 }
 
+export interface PromoBanner {
+  _id: string
+  label: string
+  headline: string
+  subheadline?: string
+  ctaText?: string
+  ctaLink?: string
+  image: SanityImage
+  accentColor?: string
+  bgFrom?: string
+  bgTo?: string
+  timerEnabled?: boolean
+  expiresAt?: string        // ISO datetime string from Sanity
+  expiredLabel?: string
+  discountBadge?: string
+  isActive: boolean
+  order: number
+}
+
 // ─── Hero Banner ─────────────────────────────────────────────────────────────
 
 export interface HeroBanner {
@@ -108,7 +128,7 @@ export interface CartItem {
   variantId?: string;
   name: string;
   slug: string;
-  image: string | SanityImage | null;
+  image: string | SanityImage | null | any;
   price: number;
   quantity: number;
   size?: string;
@@ -207,17 +227,18 @@ export type SortOption =
   | "rating"
   | "best-selling";
 
-export interface ProductFilters {
+export interface ProductFiltersProps {
   category?: string;
   sub?: string;
   search?: string;
-  inStock?: number;
+  inStock?: number | boolean;
   onSale?: boolean;
   new?: boolean;
   minPrice?: number;
   maxPrice?: number;
   sizes?: string[];
   colors?: string[];
+  brands?: string[];
   sort?: SortOption;
   page?: number;
   perPage?: number;
@@ -252,4 +273,15 @@ export interface CheckoutFormData {
 export interface StripeCheckoutSession {
   sessionId: string;
   url: string;
+}
+
+export type BrandCategory =
+  | "Fashion"
+  | "Footwear"
+  | "Jewellery"
+  | "Cosmetics";
+
+export interface BrandDirectoryItem {
+  category: BrandCategory;
+  items: string[];
 }

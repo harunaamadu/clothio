@@ -15,7 +15,7 @@ export async function registerAction(
   input: z.infer<typeof registerSchema>
 ): Promise<ActionResult<{ id: string; email: string }>> {
   const parsed = registerSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   const { name, email, password } = parsed.data
   const normalizedEmail = email.toLowerCase().trim()
@@ -49,7 +49,7 @@ export async function updateProfileAction(
   const session = await requireSession()
 
   const parsed = updateProfileSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   const updated = await prisma.user.update({
     where: { id: session.user.id },
@@ -87,7 +87,7 @@ export async function updatePasswordAction(
   const session = await requireSession()
 
   const parsed = updatePasswordSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },

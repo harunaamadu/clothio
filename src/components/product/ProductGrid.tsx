@@ -1,11 +1,15 @@
 import { ProductCard } from "./ProductCard"
+import { MinimalProductCard, BestProductCard } from "./ProductCardVariants"
 import type { Product } from "@/types"
 import { cn } from "@/lib/utils"
+
+type CardVariant = "default" | "minimal" | "best"
 
 interface ProductGridProps {
   products: Product[]
   columns?: 2 | 3 | 4
   className?: string
+  variant?: CardVariant
 }
 
 // Skeleton card shown while products are loading
@@ -33,7 +37,12 @@ export function ProductGridSkeleton({ count = 12 }: { count?: number }) {
   )
 }
 
-export function ProductGrid({ products, columns = 4, className }: ProductGridProps) {
+export function ProductGrid({
+  products,
+  columns = 4,
+  className,
+  variant = "default",
+}: ProductGridProps) {
   const colClass = {
     2: "grid-cols-2",
     3: "grid-cols-2 sm:grid-cols-3",
@@ -44,14 +53,38 @@ export function ProductGrid({ products, columns = 4, className }: ProductGridPro
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
         <div className="w-16 h-16 rounded-full bg-[#f4f4f5] flex items-center justify-center">
-          <svg className="w-7 h-7 text-[#a1a1aa]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          <svg
+            className="w-7 h-7 text-[#a1a1aa]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
           </svg>
         </div>
         <div>
           <p className="font-display font-semibold text-[#18181b]">No products found</p>
-          <p className="text-sm text-[#71717a] mt-1">Try adjusting your filters or search term.</p>
+          <p className="text-sm text-[#71717a] mt-1">
+            Try adjusting your filters or search term.
+          </p>
         </div>
+      </div>
+    )
+  }
+
+  // Minimal and Best variants stack vertically as a list, not a grid
+  if (variant === "minimal" || variant === "best") {
+    const Card = variant === "minimal" ? MinimalProductCard : BestProductCard
+    return (
+      <div className={cn("flex flex-col divide-y divide-[#f4f4f5]", className)}>
+        {products.map((product) => (
+          <Card key={product._id} product={product} />
+        ))}
       </div>
     )
   }

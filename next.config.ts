@@ -3,6 +3,7 @@ import path from "path/win32";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  allowedDevOrigins: ['10.39.4.82'],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.sanity.io" },

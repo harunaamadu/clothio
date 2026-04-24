@@ -1,6 +1,5 @@
 "use client";
 
-import { useCartStore } from "@/store/cart.store";
 import { formatPrice } from "@/lib/formatters";
 import { CartItem } from "./CartItem";
 // import { X, ShoppingBag, ArrowRight } from "lucide-react";
@@ -13,13 +12,17 @@ import {
   ShoppingBasketCheckOut01Icon,
 } from "@hugeicons/core-free-icons";
 
+import { useCartItemCount, useCartItems, useCartSubtotal } from "@/store/cart.store";
+
 interface CartSheetProps {
   open: boolean;
   onClose: () => void;
 }
 
 export function CartSheet({ open, onClose }: CartSheetProps) {
-  const { items, subtotal, itemCount } = useCartStore();
+  const items = useCartItems();
+  const itemCount = useCartItemCount();
+  const subtotal = useCartSubtotal();
 
   return (
     <>
@@ -59,7 +62,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-[#f4f4f5] transition-colors"
+            className="p-2 hover:bg-[#f4f4f5] transition-colors"
           >
             <HugeiconsIcon
               icon={CancelIcon}
@@ -136,7 +139,7 @@ export function CartSheet({ open, onClose }: CartSheetProps) {
                 onClick={onClose}
                 className="flex items-center justify-center gap-2 w-full bg-[#1a1a2e] hover:bg-primary text-white font-semibold text-sm py-3 transition-colors"
               >
-                Checkout 
+                Checkout
                 <HugeiconsIcon
                   icon={ShoppingBasketCheckOut01Icon}
                   size={24}

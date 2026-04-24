@@ -47,7 +47,7 @@ export function ProductImages({ images, productName }: ProductImagesProps) {
                 key={i}
                 onClick={() => setActiveIndex(i)}
                 className={cn(
-                  "relative shrink-0 w-16 h-20 lg:w-14 lg:h-17 rounded-lg overflow-hidden border-2 transition-all",
+                  "relative shrink-0 w-16 h-20 lg:w-14 lg:h-17 overflow-hidden border-2 transition-all",
                   i === activeIndex
                     ? "border-[#1a1a2e] shadow-sm"
                     : "border-[#e4e4e7] hover:border-[#a1a1aa]"
@@ -67,7 +67,7 @@ export function ProductImages({ images, productName }: ProductImagesProps) {
         )}
 
         {/* Main image */}
-        <div className="relative flex-1 aspect-square lg:aspect-4/5 rounded-xl overflow-hidden bg-[#f4f4f5] group">
+        <div className="relative flex-1 aspect-square lg:aspect-4/5 overflow-hidden bg-[#f4f4f5] group">
           <Image
             src={urls[activeIndex]?.full ?? ""}
             alt={urls[activeIndex]?.alt ?? productName}
@@ -80,7 +80,7 @@ export function ProductImages({ images, productName }: ProductImagesProps) {
           {/* Zoom button */}
           <button
             onClick={() => openZoom(activeIndex)}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-3 right-3 w-9 h-9 bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
             aria-label="Zoom image"
           >
             <ZoomIn className="w-4 h-4 text-[#1a1a2e]" />
@@ -91,14 +91,14 @@ export function ProductImages({ images, productName }: ProductImagesProps) {
             <>
               <button
                 onClick={prev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
                 aria-label="Previous image"
               >
                 <ChevronLeft className="w-4 h-4 text-[#1a1a2e]" />
               </button>
               <button
                 onClick={next}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
                 aria-label="Next image"
               >
                 <ChevronRight className="w-4 h-4 text-[#1a1a2e]" />
@@ -136,7 +136,7 @@ export function ProductImages({ images, productName }: ProductImagesProps) {
           {/* Close */}
           <button
             onClick={() => setZoomOpen(false)}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
             aria-label="Close zoom"
           >
             <X className="w-5 h-5 text-white" />
@@ -161,14 +161,14 @@ export function ProductImages({ images, productName }: ProductImagesProps) {
             <>
               <button
                 onClick={(e) => { e.stopPropagation(); zoomPrev() }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
                 aria-label="Previous"
               >
                 <ChevronLeft className="w-5 h-5 text-white" />
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); zoomNext() }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
                 aria-label="Next"
               >
                 <ChevronRight className="w-5 h-5 text-white" />

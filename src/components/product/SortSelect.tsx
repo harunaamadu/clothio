@@ -34,7 +34,7 @@ export function SortSelect({ total }: SortSelectProps) {
   )
 
   return (
-    <div className="flex items-center justify-between gap-3">
+    <div className="flex items-center justify-between gap-3 w-full">
       {/* Result count */}
       {total !== undefined && (
         <p className="text-sm text-[#71717a] shrink-0">

@@ -51,8 +51,8 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b border-[#e4e4e7]">
-          <span className="font-display text-xl font-bold text-[#1a1a2e]">
+        <div className="flex items-center justify-between p-4 border-b border-border/30">
+          <span className="font-display text-xl font-bold">
             Clot<span className="text-primary">hio</span>
           </span>
           <button

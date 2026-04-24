@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { OrderStatus } from "@/app/generated/prisma"
 import prisma from "@/lib/prisma/client"
 import { ok, err, requireSession, type ActionResult } from "./_helpers"
+import { OrderStatus } from "@/generated/prisma/enums"
 
 // ─── Get current user's orders ────────────────────────────────────────────────
 
@@ -102,7 +102,7 @@ export async function placeOrderAction(
   const session = await requireSession()
 
   const parsed = placeOrderSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   const { items, ...orderData } = parsed.data
 

@@ -46,6 +46,15 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-ring-1: ring-1 3s linear infinite;
+  --animate-ring-1-slow: ring-1 6s linear infinite;
+
+  --animate-ring-2: ring-2 3s linear infinite;
+  --animate-ring-2-slow: ring-2 6s linear infinite;
+
+  --animate-ring-3: ring-3 3s linear infinite;
+  --animate-ring-3-slow: ring-3 6s linear infinite;
 }
 
 :root {
@@ -84,7 +93,7 @@
 }
 
 .dark {
-  --background: oklch(0.147 0.004 49.25);
+  --background: oklch(20.654% 0.00373 48.295);
   --foreground: oklch(0.985 0.001 106.423);
   --card: oklch(0.216 0.006 56.043);
   --card-foreground: oklch(0.985 0.001 106.423);
@@ -137,5 +146,32 @@
   h5,
   h6 {
     @apply font-heading;
+  }
+}
+
+@keyframes ring-1 {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes ring-2 {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes ring-3 {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
   }
 }

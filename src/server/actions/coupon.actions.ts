@@ -71,7 +71,7 @@ export async function validateCouponAction(
   await requireSession()
 
   const parsed = applyCouponSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   const { code, subtotal } = parsed.data
   const coupon = COUPONS[code]

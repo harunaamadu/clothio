@@ -3,25 +3,10 @@
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 // CHANGED: import UserRole (was Role) and updated OrderStatus (no CONFIRMED)
-import { OrderStatus, UserRole } from "@/app/generated/prisma"
 import prisma from "@/lib/prisma/client"
 import { ok, err, requireAdminSession, type ActionResult } from "./_helpers"
-
-// ─── Dashboard stats ──────────────────────────────────────────────────────────
-
-export interface AdminStats {
-  totalUsers: number
-  totalOrders: number
-  totalRevenue: number
-  pendingOrders: number
-  recentOrders: {
-    id: string
-    status: OrderStatus
-    total: number
-    createdAt: Date
-    user: { name: string | null; email: string }
-  }[]
-}
+import { OrderStatus, UserRole } from "@/generated/prisma/enums"
+import type { AdminStats } from "@/types/admin"
 
 export async function getAdminStatsAction(): Promise<ActionResult<AdminStats>> {
   await requireAdminSession()
@@ -167,7 +152,7 @@ export async function updateOrderStatusAction(
   await requireAdminSession()
 
   const parsed = updateOrderStatusSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   const order = await prisma.order.findUnique({
     where: { id: parsed.data.orderId },

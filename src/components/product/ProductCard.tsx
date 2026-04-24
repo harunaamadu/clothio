@@ -52,12 +52,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
   return (
     <div
       className={cn(
-        "group relative bg-white rounded-xl overflow-hidden border border-[#e4e4e7] hover:border-primary/30 hover:shadow-lg transition-all duration-300",
+        "group relative bg-background text-foreground overflow-hidden border border-border/60 hover:border-primary/30 hover:shadow-lg transition-all duration-300",
         className
       )}
     >
       {/* Image */}
-      <Link href={`/products/${product.slug.current}`} className="block relative aspect-3/4 overflow-hidden bg-[#f4f4f5]">
+      <div className="block relative aspect-3/4 overflow-hidden bg-stone-100">
         <Image
           src={imageUrl}
           alt={product.name}
@@ -132,7 +132,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             Add to Cart
           </button>
         </div>
-      </Link>
+      </div>
 
       {/* Info */}
       <div className="p-3">

@@ -6,6 +6,7 @@ import { z } from "zod"
 import { addressSchema } from "@/schemas/checkout"
 import prisma from "@/lib/prisma/client"
 import { ok, err, requireSession, type ActionResult } from "./_helpers"
+import { NotificationPrefs } from "@/lib/notification-prefs"
 
 // ─── Get all addresses ────────────────────────────────────────────────────────
 
@@ -29,7 +30,7 @@ export async function addAddressAction(
   const session = await requireSession()
 
   const parsed = addressSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   // Count existing addresses to decide whether to auto-set default
   const existingCount = await prisma.address.count({
@@ -60,7 +61,7 @@ export async function updateAddressAction(
   const session = await requireSession()
 
   const parsed = addressSchema.safeParse(input)
-  if (!parsed.success) return err(parsed.error.errors[0].message)
+  if (!parsed.success) return err(parsed.error.issues[0].message)
 
   const address = await prisma.address.findUnique({
     where: { id: addressId },
@@ -156,15 +157,6 @@ const notificationPrefsSchema = z.object({
   newArrivals:  z.boolean(),
   reviews:      z.boolean(),
 })
-
-export type NotificationPrefs = z.infer<typeof notificationPrefsSchema>
-
-export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
-  orderUpdates: true,
-  promotions:   false,
-  newArrivals:  false,
-  reviews:      true,
-}
 
 export async function updateNotificationPrefsAction(
   input: unknown

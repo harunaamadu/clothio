@@ -1,6 +1,6 @@
 import { defineQuery } from 'next-sanity'
 import { sanityClient } from './client'
-import type { Product, ProductCategory, HeroBanner, BlogPost, ProductFilters } from '@/types'
+import type { Product, ProductCategory, HeroBanner, BlogPost, ProductFiltersProps, PromoBanner } from '@/types'
 
 // ─── GROQ Projections ─────────────────────────────────────────────────────────
 // Defined once and reused across all queries to keep things DRY and consistent.
@@ -94,7 +94,7 @@ function fetchMany<T>(query: string, params: Record<string, unknown> = {}): Prom
  * Flexible product listing query — supports filtering, sorting, and pagination.
  * All parameters are optional; sensible defaults apply.
  */
-export async function getProducts(filters: ProductFilters = {}): Promise<Product[]> {
+export async function getProducts(filters: ProductFiltersProps = {}): Promise<Product[]> {
   const {
     category,
     minPrice,
@@ -143,7 +143,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
 /**
  * Total count for the same filter set — used for pagination UI.
  */
-export async function getProductCount(filters: Omit<ProductFilters, 'page' | 'perPage' | 'sort'> = {}): Promise<number> {
+export async function getProductCount(filters: Omit<ProductFiltersProps, 'page' | 'perPage' | 'sort'> = {}): Promise<number> {
   const {
     category,
     minPrice,
@@ -234,6 +234,13 @@ export async function getOnSaleProducts(limit = 8): Promise<Product[]> {
   return fetchMany<Product>(query, { limit })
 }
 
+export async function getTopRatedProducts(limit = 8): Promise<Product[]> {
+  const query = `*[_type == "product"]
+    | order(coalesce(rating, 0) desc, _createdAt desc)[0...$limit]
+    ${PRODUCT_CARD_PROJECTION}`
+  return fetchMany<Product>(query, { limit })
+}
+
 /**
  * Related products — same category, excludes the current product.
  * Falls back to recent products from any category if not enough are found.
@@ -284,7 +291,8 @@ export async function getAllSizes(): Promise<string[]> {
   const result = await sanityClient.fetch<(string | null)[]>(query, {}, {
     next: { revalidate: 3600, tags: ['sanity'] },
   })
-  return result.filter((s): s is string => !!s).sort()
+  return result.filter((s): s is string => s !== null && s !== undefined && s !== "").sort()
+  // return result.filter((s): s is string => !!s).sort()
 }
 
 /**
@@ -295,7 +303,8 @@ export async function getAllColors(): Promise<{ name: string; hex?: string }[]> 
   const result = await sanityClient.fetch<({ name: string | null; hex?: string | null })[]>(
     query, {}, { next: { revalidate: 3600, tags: ['sanity'] } }
   )
-  return result.filter((c): c is { name: string; hex?: string } => !!c.name)
+  return result.filter((c): c is { name: string; hex?: string } => !!c && !!c.name)
+  // return result.filter((c): c is { name: string; hex?: string } => !!c.name)
 }
 
 /**
@@ -371,6 +380,32 @@ export async function getHeroBanners(): Promise<HeroBanner[]> {
       order
     }`
   return fetchMany<HeroBanner>(query)
+}
+
+// ─── Promo Banners ────────────────────────────────────────────────────────────
+ 
+export async function getPromoBanners(): Promise<PromoBanner[]> {
+  const query = `*[_type == "promoBanner" && isActive == true]
+    | order(order asc)
+    {
+      _id,
+      label,
+      headline,
+      subheadline,
+      ctaText,
+      ctaLink,
+      image ${IMAGE_PROJECTION},
+      accentColor,
+      bgFrom,
+      bgTo,
+      timerEnabled,
+      expiresAt,
+      expiredLabel,
+      discountBadge,
+      isActive,
+      order
+    }`
+  return fetchMany<PromoBanner>(query)
 }
 
 // ─── Blog ─────────────────────────────────────────────────────────────────────

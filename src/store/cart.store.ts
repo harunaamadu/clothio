@@ -9,8 +9,6 @@ interface CartStore {
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
-  itemCount: number;
-  subtotal: number;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -18,16 +16,10 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
 
-      get itemCount() {
-        return get().items.reduce((sum, item) => sum + item.quantity, 0);
-      },
-
-      get subtotal() {
-        return get().items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      },
-
       addItem: (newItem) => {
-        const id = newItem.id ?? `${newItem.productId}-${newItem.size ?? ""}-${newItem.color ?? ""}`;
+        const id =
+          newItem.id ??
+          `${newItem.productId}-${newItem.size ?? ""}-${newItem.color ?? ""}`;
         const item = { ...newItem, id };
 
         set((state) => {
@@ -75,3 +67,16 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+
+// ─── Computed selectors ───────────────────────────────────────────────────────
+// Use these instead of store properties for reactive derived values.
+
+export const useCartItemCount = () =>
+  useCartStore((s) => s.items.reduce((sum, item) => sum + item.quantity, 0));
+
+export const useCartSubtotal = () =>
+  useCartStore((s) =>
+    s.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  );
+
+export const useCartItems = () => useCartStore((s) => s.items);

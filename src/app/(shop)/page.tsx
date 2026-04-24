@@ -1,19 +1,17 @@
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { CategoryCarousel } from "@/components/home/CategoryCarousel";
-import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { CategoryCarousel } from "@/components/layout/CategoryCarousel";
 import { FALLBACK_BANNERS } from "@/lib/constants";
-import { getBestSellers, getFeaturedProducts, getHeroBanners, getNewArrivals } from "@/lib/sanity/queries";
-import type { HeroBanner, Product } from "@/types";
-import { NewArrivals } from "@/components/home/NewArrivals";
-import { BestSellers } from "@/components/home/BestSellers";
+import { getFeaturedProducts, getHeroBanners, getPromoBanners } from "@/lib/sanity/queries";
+import type { HeroBanner, Product, PromoBanner } from "@/types";
+import Newsletter from "@/components/shared/Newsletter";
+import HomeLayout from "@/components/home/HomeLayout";
 
 export const revalidate = 3600;
 
 export default async function HomePage() {
   let banners: HeroBanner[] = FALLBACK_BANNERS;
   let featured: Product[] = [];
-  let newArrivals: Product[] = [];
-  let bestSellers: Product[] = [];
+  let promoBanners: PromoBanner[] = [];
 
   await Promise.all([
     getHeroBanners()
@@ -23,24 +21,19 @@ export default async function HomePage() {
     getFeaturedProducts()
       .then((data) => { featured = data; })
       .catch((err) => console.warn("Failed to fetch featured products:", err)),
-      
-    getNewArrivals()
-      .then((data) => { newArrivals = data; })
-      .catch((err) => console.warn("Failed to fetch new arrivals:", err)),
-      
-    getBestSellers()
-      .then((data) => { bestSellers = data; })
-      .catch((err) => console.warn("Failed to fetch best sellers:", err)),
+
+      getPromoBanners()
+      .then((data) => { if (data.length > 0) promoBanners = data; })
+      .catch((err) => console.warn("Failed to fetch promo banners:", err)),
 
   ]);
 
   return (
-    <div className="space-y-0">
+    <div className="relative flex flex-col w-full h-full space-y-0">
       <HeroCarousel banners={banners} />
       <CategoryCarousel />
-      <FeaturedProducts products={featured} />
-      <NewArrivals products={newArrivals} />
-      <BestSellers products={bestSellers} />
+      <HomeLayout />
+      <Newsletter />
     </div>
   );
 }

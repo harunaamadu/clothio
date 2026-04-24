@@ -11,6 +11,7 @@ import {
   MinusSignIcon,
   PlusSignIcon,
 } from "@hugeicons/core-free-icons";
+import { Input } from "../ui/input";
 
 export function CartItem({ item }: { item: CartItemType }) {
   const { updateQuantity, removeItem } = useCartStore();
@@ -57,7 +58,7 @@ export function CartItem({ item }: { item: CartItemType }) {
         <div className="flex items-center gap-2 mt-2">
           <button
             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-            className="w-6 h-6 rounded-full border border-[#e4e4e7] hover:border-[#1a1a2e] flex items-center justify-center transition-colors"
+            className="w-6 h-6 border border-[#e4e4e7] hover:border-[#1a1a2e] flex items-center justify-center transition-colors"
             aria-label="Decrease quantity"
           >
             <HugeiconsIcon
@@ -68,13 +69,16 @@ export function CartItem({ item }: { item: CartItemType }) {
               className="w-3 h-3"
             />
           </button>
-          <span className="text-sm font-medium w-5 text-center">
-            {item.quantity}
-          </span>
+          <Input
+            value={item.quantity}
+            className="text-sm font-medium w-fit max-w-10 h-full text-center"
+            readOnly
+          />
+
           <button
             onClick={() => updateQuantity(item.id, item.quantity + 1)}
             disabled={item.quantity >= item.stock}
-            className="w-6 h-6 rounded-full border border-[#e4e4e7] hover:border-[#1a1a2e] flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-6 h-6 border border-[#e4e4e7] hover:border-[#1a1a2e] flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             aria-label="Increase quantity"
           >
             <HugeiconsIcon

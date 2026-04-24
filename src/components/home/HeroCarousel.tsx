@@ -96,21 +96,25 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
               ? urlFor(item.bgImage).width(1400).quality(90).url()
               : null;
 
+            const mobileHeroImage = item.mobileImage?.asset
+              ? urlFor(item.mobileImage).width(1400).quality(90).url()
+              : null;
+
             const isActive = current === index;
 
             return (
               <CarouselItem
                 key={index}
-                className="relative h-full overflow-hidden bg-cover bg-center"
+                className="relative w-full min-h-[calc(100svh-200px)] md:h-full overflow-hidden"
               >
                 <div className="h-full py-12 md:py-16">
                   <div className="h-full p-4 md:p-6">
-                    <div className="grid h-full items-center gap-10 lg:grid-cols-2">
+                    <div className="grid items-center gap-10 lg:grid-cols-2">
                       {/* Text — only animate when this slide is active */}
                       {isActive && (
                         <div
                           key={animKey}
-                          className="space-y-6 text-center lg:text-left"
+                          className="relative space-y-6 text-center lg:text-left z-10 text-white"
                         >
                           {item.badge && (
                             <motion.div
@@ -149,7 +153,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                               variants={textVariants}
                               initial="hidden"
                               animate="show"
-                              className="mx-auto max-w-lg text-muted-foreground lg:mx-0"
+                              className="mx-auto max-w-lg text-stone-300 md:text-muted-foreground lg:mx-0"
                             >
                               {item.description}
                             </motion.p>
@@ -162,7 +166,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                               variants={textVariants}
                               initial="hidden"
                               animate="show"
-                              className="text-sm text-muted-foreground"
+                              className="text-sm text-stone-100 md:text-muted-foreground"
                             >
                               Starting at{" "}
                               <em
@@ -202,6 +206,8 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                       {/* Spacer for inactive slides to preserve grid layout */}
                       {!isActive && <div />}
 
+                      <div className="absolute inset-0 w-screen bg-black/50 block z-1" />
+
                       {/* Image */}
                       {heroImage && (
                         <div className="absolute inset-0 w-[101%] hidden lg:block">
@@ -216,6 +222,40 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                             className="absolute inset-0 -z-10"
                           >
                             <motion.div
+                              animate={{ y: [0, -8, 0] }}
+                              transition={{
+                                duration: 4,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                              className="relative h-full w-full z-1"
+                            >
+                              <Image
+                                src={heroImage}
+                                alt={item.title}
+                                fill
+                                priority={index === 0}
+                                sizes="100vw"
+                                className="object-cover object-top-right -translate-y-32"
+                              />
+                            </motion.div>
+                          </motion.div>
+                        </div>
+                      )}
+
+                      {mobileHeroImage && (
+                        <div className="absolute inset-0 w-[101%] h-full block lg:hidden -z-10">
+                          <motion.div
+                            key={`img-${animKey}`}
+                            initial={{ opacity: 0, x: 90 }}
+                            animate={{ opacity: 1, x: -10 }}
+                            transition={{
+                              duration: 0.8,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="absolute inset-0"
+                          >
+                            <motion.div
                               animate={{ y: [0, -12, 0] }}
                               transition={{
                                 duration: 4,
@@ -225,7 +265,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                               className="relative h-full w-full"
                             >
                               <Image
-                                src={heroImage}
+                                src={mobileHeroImage}
                                 alt={item.title}
                                 fill
                                 priority={index === 0}

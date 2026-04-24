@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { useCartStore } from "@/store/cart.store";
+
+import { useCartItemCount } from "@/store/cart.store";
 import { useWishlistStore } from "@/store/wishlist.store";
+
 import { CartSheet } from "@/components/cart/CartSheet";
 import { MobileNav } from "./MobileNav";
 import {
@@ -28,7 +30,7 @@ import {
   ShoppingBag01Icon,
   UserIcon,
 } from "@hugeicons/core-free-icons";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -46,14 +48,18 @@ import {
 
 import { MegaMenu } from "./MegaMenu";
 import { DropDownMenu } from "./DropDownMenu";
+import { DesktopNav } from "./DesktopNav";
 
 export function Header() {
   const { data: session } = useSession();
-  const itemCount = useCartStore((s) => s.itemCount);
+  // const itemCount = useCartStore((s) => s.itemCount);
+  const itemCount = useCartItemCount();
   const wishlistCount = useWishlistStore((s) => s.items.length);
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const router = useRouter();
 
   // ── Scroll behaviour ───────────────────────────────────────────────────────
   const [scrolled, setScrolled] = useState(false);
@@ -63,11 +69,19 @@ export function Header() {
   const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState(false);
 
+  const [megaOpen, setMegaOpen] = useState(false);
+
   const handleScroll = useCallback(() => {
     const y = window.scrollY;
     const delta = y - lastScrollY.current;
 
     setScrolled(y > 24);
+
+    if (megaOpen) {
+      setHidden(false);
+      lastScrollY.current = y;
+      return;
+    }
 
     if (y < 80) {
       setHidden(false);
@@ -78,7 +92,7 @@ export function Header() {
     }
 
     lastScrollY.current = y;
-  }, []);
+  }, [megaOpen]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -89,13 +103,6 @@ export function Header() {
   const isCurrentPath = useCallback(
     (href: string) => pathname === href || pathname.startsWith(`${href}/`),
     [pathname],
-  );
-
-  const categoriesLink = navLinks.find((link) => link.label === "Categories");
-
-  // Get all links that have children (for mega menu display)
-  const megaMenuLinks = navLinks.filter(
-    (link) => link.children && link.children.length > 0,
   );
 
   return (
@@ -116,14 +123,20 @@ export function Header() {
         animate={{ y: hidden ? "-100%" : "0%" }}
         transition={{ duration: 0.36, ease: [0.32, 0, 0.67, 0] }}
         className={cn(
-          "sticky top-0 inset-x-0 z-100 transition-all duration-300 layer",
+          "sticky top-0 inset-x-0 z-50 transition-all duration-300",
           scrolled
             ? "bg-background/75 backdrop-blur-md border-b border-neutral-100 shadow-sm shadow-black/4"
             : "bg-background",
         )}
       >
         <div className="layout">
-          <div className="flex items-center justify-between h-16 gap-4">
+          <div
+            className={cn(
+              "h-16 w-full",
+              "grid grid-cols-3 gap-4",
+              "md:flex md:items-center md:justify-between md:gap-4",
+            )}
+          >
             {/* Mobile nav trigger */}
             <MobileNav navLinks={navLinks} />
 
@@ -135,66 +148,12 @@ export function Header() {
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => {
-                if (link.type === "mega") {
-                  return (
-                    <Drawer key={link.label} direction="top">
-                      <DrawerTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-sm font-medium"
-                        >
-                          {link.label}
-                        </Button>
-                      </DrawerTrigger>
-                      <MegaMenu />
-                    </Drawer>
-                  );
-                }
-
-                if (link.type === "dropdown" && link.children) {
-                  return (
-                    <DropDownMenu
-                      key={link.label}
-                      label={link.label}
-                      href={link.href}
-                      childrenLinks={link.children}
-                      isActive={isCurrentPath(link.href)}
-                    />
-                  );
-                }
-
-                return (
-                  <Button
-                    key={link.label}
-                    variant="ghost"
-                    size="sm"
-                    className="relative group p-0 text-sm font-medium"
-                  >
-                    <Link
-                      href={link.href}
-                      className={cn(
-                        "px-3 py-2",
-                        link.label === "Sale"
-                          ? "text-rose-600 hover:bg-rose-50"
-                          : "hover:bg-muted",
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-
-                    <span
-                      className={cn(
-                        "absolute bottom-0 right-0 h-0.5 w-0 bg-primary transition-all group-hover:w-full",
-                        isCurrentPath(link.href) && "w-full",
-                      )}
-                    />
-                  </Button>
-                );
-              })}
-            </nav>
+            <DesktopNav
+              navLinks={navLinks}
+              isCurrentPath={isCurrentPath}
+              megaOpen={megaOpen}
+              onToggleMega={() => setMegaOpen((prev) => !prev)}
+            />
 
             {/* Right actions */}
             <div className="flex items-center gap-1">
@@ -249,10 +208,11 @@ export function Header() {
 
               {/* Wishlist */}
               <Button
-                // href="/wishlist"
                 aria-label="Wishlist"
                 variant="ghost"
                 size="icon-lg"
+                className="relative"
+                onClick={() => router.push("/wishlist")}
               >
                 <HugeiconsIcon
                   icon={FavouriteIcon}
@@ -274,6 +234,7 @@ export function Header() {
                 aria-label="Cart"
                 variant="ghost"
                 size="icon-lg"
+                className="relative"
               >
                 <HugeiconsIcon
                   icon={ShoppingBag01Icon}
@@ -386,6 +347,9 @@ export function Header() {
             </div>
           </div>
         </div>
+
+        {/* MegaMenu renders here instead */}
+        <MegaMenu open={megaOpen} onClose={() => setMegaOpen(false)} />
       </motion.header>
 
       <CartSheet open={cartOpen} onClose={() => setCartOpen(false)} />
