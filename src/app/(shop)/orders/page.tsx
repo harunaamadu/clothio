@@ -1,30 +1,31 @@
-import type { Metadata } from "next"
-import { redirect } from "next/navigation"
-import { auth } from "@/auth"
-import Link from "next/link"
-import Image from "next/image"
-import { Package, ChevronRight } from "lucide-react"
-import { getMyOrdersAction } from "@/server/actions/order.actions"
-import { formatPrice, formatDate, formatOrderStatus } from "@/lib/formatters"
-import { cn } from "@/lib/utils"
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import Link from "next/link";
+import Image from "next/image";
+import { Package, ChevronRight } from "lucide-react";
+import { getMyOrdersAction } from "@/server/actions/order.actions";
+import { formatPrice, formatDate, formatOrderStatus } from "@/lib/formatters";
+import { cn } from "@/lib/utils";
+import Title from "@/components/ui/title";
 
-export const metadata: Metadata = { title: "My Orders" }
+export const metadata: Metadata = { title: "My Orders" };
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
-  PENDING:    { bg: "bg-yellow-50",  text: "text-yellow-800"  },
-  PROCESSING: { bg: "bg-blue-50",    text: "text-blue-800"    },
-  SHIPPED:    { bg: "bg-violet-50",  text: "text-violet-800"  },
-  DELIVERED:  { bg: "bg-green-50",   text: "text-green-800"   },
-  CANCELLED:  { bg: "bg-muted",      text: "text-muted-foreground" },
-  REFUNDED:   { bg: "bg-orange-50",  text: "text-orange-800"  },
-}
+  PENDING: { bg: "bg-yellow-50", text: "text-yellow-800" },
+  PROCESSING: { bg: "bg-blue-50", text: "text-blue-800" },
+  SHIPPED: { bg: "bg-violet-50", text: "text-violet-800" },
+  DELIVERED: { bg: "bg-green-50", text: "text-green-800" },
+  CANCELLED: { bg: "bg-muted", text: "text-muted-foreground" },
+  REFUNDED: { bg: "bg-orange-50", text: "text-orange-800" },
+};
 
 export default async function OrdersPage() {
-  const session = await auth()
-  if (!session?.user) redirect("/login?callbackUrl=/orders")
+  const session = await auth();
+  if (!session?.user) redirect("/login?callbackUrl=/orders");
 
-  const result = await getMyOrdersAction()
-  const { orders = [] } = result.success ? result.data : {}
+  const result = await getMyOrdersAction();
+  const { orders = [] } = result.success ? result.data : {};
 
   /* ── Empty state ── */
   if (orders.length === 0) {
@@ -34,7 +35,9 @@ export default async function OrdersPage() {
           <Package className="w-8 h-8 text-muted-foreground" />
         </div>
         <div className="space-y-1">
-          <h1 className="font-display text-2xl font-bold text-foreground">No orders yet</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">
+            No orders yet
+          </h1>
           <p className="text-muted-foreground text-sm">
             When you place an order it will appear here.
           </p>
@@ -46,24 +49,22 @@ export default async function OrdersPage() {
           Start Shopping
         </Link>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="container py-8 lg:py-12">
+    <div className="layout py-8 lg:py-12">
       {/* Header */}
       <div className="pb-5 border-b border-border mb-8">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-          My Orders
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <Title title="My orders" />
+        <p className="text-sm text-muted-foreground -mt-7">
           {orders.length} {orders.length === 1 ? "order" : "orders"}
         </p>
       </div>
 
       <div className="space-y-3">
         {orders.map((order) => {
-          const style = STATUS_STYLES[order.status] ?? STATUS_STYLES.PROCESSING
+          const style = STATUS_STYLES[order.status] ?? STATUS_STYLES.PROCESSING;
           return (
             <Link
               key={order.id}
@@ -80,13 +81,16 @@ export default async function OrdersPage() {
                     </span>
                   </span>
                   <span className="text-border select-none">·</span>
-                  <span className="text-muted-foreground">{formatDate(order.createdAt)}</span>
+                  <span className="text-muted-foreground">
+                    {formatDate(order.createdAt)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span
                     className={cn(
                       "text-xs font-semibold px-2.5 py-1 uppercase tracking-wide",
-                      style.bg, style.text
+                      style.bg,
+                      style.text,
                     )}
                   >
                     {formatOrderStatus(order.status)}
@@ -104,7 +108,10 @@ export default async function OrdersPage() {
                       <div
                         key={item.id}
                         className="relative w-10 h-12 overflow-hidden bg-muted border border-background"
-                        style={{ marginLeft: i > 0 ? "-6px" : "0", zIndex: 4 - i }}
+                        style={{
+                          marginLeft: i > 0 ? "-6px" : "0",
+                          zIndex: 4 - i,
+                        }}
                       >
                         {item.image && (
                           <Image
@@ -126,7 +133,8 @@ export default async function OrdersPage() {
                   <div className="hidden sm:block ml-1">
                     <p className="text-sm font-medium text-foreground line-clamp-1">
                       {order.items[0]?.name}
-                      {order.items.length > 1 && ` + ${order.items.length - 1} more`}
+                      {order.items.length > 1 &&
+                        ` + ${order.items.length - 1} more`}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {order.items.length}{" "}
@@ -137,14 +145,18 @@ export default async function OrdersPage() {
 
                 {/* Total */}
                 <div className="text-right shrink-0">
-                  <p className="font-bold text-foreground">{formatPrice(order.total)}</p>
-                  <p className="text-xs text-muted-foreground">incl. tax & shipping</p>
+                  <p className="font-bold text-foreground">
+                    {formatPrice(order.total)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    incl. tax & shipping
+                  </p>
                 </div>
               </div>
             </Link>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

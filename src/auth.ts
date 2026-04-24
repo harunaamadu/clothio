@@ -54,20 +54,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role;
+        token.role = user.role;
       }
       return token;
     },
+
     async session({ session, token }) {
-      if (token.sub) {
-        // Always pull fresh role from DB
-        const user = await db.user.findUnique({
-          where: { id: token.sub },
-          select: { role: true },
-        });
-        session.user.id = token.sub;
-        session.user.role = user?.role ?? "CUSTOMER";
-      }
+      session.user.id = token.id as string;
+      session.user.role = token.role as string;
       return session;
     },
   },

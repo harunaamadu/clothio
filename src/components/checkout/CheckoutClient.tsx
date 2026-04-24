@@ -61,6 +61,28 @@ export function CheckoutClient({
   const tax = subtotal * 0.08;
   const total = subtotal + shippingCost + tax;
 
+  const [redirecting, setRedirecting] = useState(false);
+
+  const handleStripeCheckout = async () => {
+    setRedirecting(true);
+    try {
+      const res = await fetch("/api/stripe/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          shippingAddressId: selectedId,
+        }),
+      });
+      const { url, error } = await res.json();
+      if (error) throw new Error(error);
+      window.location.href = url;
+    } catch (err: any) {
+      toast.error(err.message ?? "Failed to start checkout");
+      setRedirecting(false);
+    }
+  };
+
   // Derive both input and output types from the schema
   type AddressFormInput = z.input<typeof addressSchema>;
   type AddressFormOutput = z.output<typeof addressSchema>;
@@ -305,22 +327,24 @@ export function CheckoutClient({
               <h2 className="flex items-center gap-2 font-semibold text-foreground">
                 <HugeiconsIcon icon={CreditCardIcon} size={16} /> Payment
               </h2>
-              <div className="border border-border p-8 text-center space-y-3 bg-muted/30">
-                <HugeiconsIcon icon={CreditCardIcon} size={18} />
-                <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-                  Stripe integration ready. Create a Checkout Session via{" "}
-                  <code className="bg-muted px-1.5 py-0.5 text-xs font-mono">
-                    /api/stripe/create-checkout
-                  </code>{" "}
-                  to complete payment.
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  See{" "}
-                  <code className="bg-muted px-1 font-mono text-xs">
-                    lib/utils/stripe.ts
-                  </code>
-                </p>
-              </div>
+              <p className="text-sm text-muted-foreground">
+                You'll be redirected to Stripe's secure checkout to complete
+                payment.
+              </p>
+              <button
+                onClick={handleStripeCheckout}
+                disabled={redirecting}
+                className="w-full bg-primary text-primary-foreground font-semibold py-3.5 text-sm hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center justify-center gap-2"
+              >
+                {redirecting && (
+                  <HugeiconsIcon
+                    icon={Loading03Icon}
+                    size={16}
+                    className="animate-spin"
+                  />
+                )}
+                {redirecting ? "Redirecting..." : "Pay with Stripe"}
+              </button>
             </div>
           )}
         </div>

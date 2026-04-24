@@ -20,10 +20,6 @@ clothio/
 │   │   └── orders/
 │   │       ├── page.tsx
 │   │       └── [id]/page.tsx
-│   ├── (dashboard)/
-│   │   └── dashboard/
-│   │       ├── page.tsx                  ← User dashboard
-│   │       └── layout.tsx
 │   └── api/
 │       ├── auth/[...nextauth]/route.ts   ✅
 │       ├── register/route.ts             ← POST: create user with bcrypt
@@ -31,6 +27,21 @@ clothio/
 │       ├── cart/route.ts
 │       ├── orders/route.ts
 │       └── webhook/stripe/route.ts       ← Stripe webhook handler
+│
+├── (dashboard)/
+│   ├── dashboard/
+│   │   ├── page.tsx          ← User dashboard
+│   │   ├── orders/
+│   │   ├── wishlist/
+│   │   └── layout.tsx
+│   │
+│   └── admin/
+│       ├── page.tsx          ← Admin dashboard
+│       ├── products/
+│       ├── orders/
+│       ├── customers/
+│       ├── analytics/
+│       └── layout.tsx
 │
 ├── components/
 │   ├── layout/
