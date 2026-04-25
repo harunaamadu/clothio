@@ -126,8 +126,8 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                               <Badge
                                 className="inline-block text-xs font-semibold uppercase tracking-[0.2em]"
                                 style={{
-                                  backgroundColor: `${item.accentColor ?? "#e94560"}15`,
-                                  color: item.accentColor ?? "#e94560",
+                                  backgroundColor: `${item.accentColor ?? "#e94560"}90`,
+                                  color: "#ffffff",
                                 }}
                               >
                                 {item.badge}
@@ -153,7 +153,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                               variants={textVariants}
                               initial="hidden"
                               animate="show"
-                              className="mx-auto max-w-lg text-stone-300 md:text-muted-foreground lg:mx-0"
+                              className="mx-auto max-w-lg text-stone-300 lg:mx-0"
                             >
                               {item.description}
                             </motion.p>
@@ -166,7 +166,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                               variants={textVariants}
                               initial="hidden"
                               animate="show"
-                              className="text-sm text-stone-100 md:text-muted-foreground"
+                              className="text-sm text-stone-100"
                             >
                               Starting at{" "}
                               <em
@@ -206,7 +206,7 @@ export function HeroCarousel({ banners }: HeroCarouselProps) {
                       {/* Spacer for inactive slides to preserve grid layout */}
                       {!isActive && <div />}
 
-                      <div className="absolute inset-0 w-screen bg-black/50 block z-1" />
+                      <div className="absolute inset-0 w-screen bg-black/50 block z-0" />
 
                       {/* Image */}
                       {heroImage && (

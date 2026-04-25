@@ -1,33 +1,48 @@
 import NextAuth from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 import { authConfig } from "./auth.config";
+import { NextRequest, NextResponse } from "next/server";
 
-export const { auth } = NextAuth(authConfig);
-
-const protectedRoutes = ["/dashboard"];
-const authRoutes = ["/login", "/register"];
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  const { nextUrl } = req;
-  const isLoggedIn = !!req.auth?.user;
+  const { nextUrl, auth: session } = req;
+  const isLoggedIn = !!session?.user;
+  const role = session?.user?.role;
+  const pathname = nextUrl.pathname;
 
-  const isProtected = protectedRoutes.some((route) =>
-    nextUrl.pathname.startsWith(route)
-  );
-
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-
-  if (isAuthRoute && isLoggedIn) {
-    return Response.redirect(new URL("/dashboard", nextUrl));
+  // ─── Admin routes — ADMIN only ────────────────────────────────────────────
+  if (pathname.startsWith("/admin")) {
+    if (!isLoggedIn) {
+      const url = new URL("/login", nextUrl.origin);
+      url.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(url);
+    }
+    if (role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/access-denied", nextUrl.origin));
+    }
   }
+
+  // ─── Protected user routes ────────────────────────────────────────────────
+  const protectedPaths = ["/dashboard", "/checkout", "/orders", "/wishlist"];
+  const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
 
   if (isProtected && !isLoggedIn) {
-    return Response.redirect(new URL("/login", nextUrl));
+    const url = new URL("/login", nextUrl.origin);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
   }
+
+  // ─── Redirect logged-in users away from auth pages ────────────────────────
+  const authPaths = ["/login", "/register"];
+  if (authPaths.includes(pathname) && isLoggedIn) {
+    return NextResponse.redirect(new URL("/dashboard", nextUrl.origin));
+  }
+
+  return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next|api|.*\\..*).*)"],
 };
 
 export function middleware(request: NextRequest) {

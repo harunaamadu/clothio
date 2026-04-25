@@ -67,7 +67,6 @@ export function Header() {
   const lastScrollY = useRef(0);
 
   const pathname = usePathname();
-  const [openMenu, setOpenMenu] = useState(false);
 
   const [megaOpen, setMegaOpen] = useState(false);
 
@@ -108,7 +107,7 @@ export function Header() {
   return (
     <>
       {/* Top bar */}
-      <div className="layout flex items-center justify-center bg-muted text-xs py-2">
+      <div className="layout flex items-center justify-center bg-primary/10 text-primary/90 text-xs py-2">
         <span>Free shipping on orders over $55 &nbsp;·&nbsp;</span>
         <Link
           href="/products?sale=true"
@@ -134,11 +133,15 @@ export function Header() {
             className={cn(
               "h-16 w-full",
               "grid grid-cols-3 gap-4",
-              "md:flex md:items-center md:justify-between md:gap-4",
+              "md:flex items-center md:justify-between md:gap-4",
             )}
           >
             {/* Mobile nav trigger */}
-            <MobileNav navLinks={navLinks} />
+            <MobileNav
+              navLinks={navLinks}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
@@ -158,7 +161,7 @@ export function Header() {
             {/* Right actions */}
             <div className="flex items-center gap-1">
               {/* Search */}
-              <div className="relative">
+              <div className="relative hidden md:block">
                 {searchOpen ? (
                   <div className="flex items-center border border-[#e4e4e7] rounded-full px-3 py-1.5 bg-[#f4f4f5]">
                     <HugeiconsIcon
@@ -200,7 +203,7 @@ export function Header() {
                       size={24}
                       color="currentColor"
                       strokeWidth={1.5}
-                      className="w-5 h-5 text-[#18181b]"
+                      className="w-5 h-5"
                     />
                   </Button>
                 )}
@@ -219,7 +222,7 @@ export function Header() {
                   size={24}
                   color="currentColor"
                   strokeWidth={1.5}
-                  className="w-5 h-5 text-[#18181b]"
+                  className="w-5 h-5"
                 />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -241,7 +244,7 @@ export function Header() {
                   size={24}
                   color="currentColor"
                   strokeWidth={1.5}
-                  className="w-5 h-5 text-[#18181b]"
+                  className="w-5 h-5"
                 />
                 {itemCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -277,19 +280,23 @@ export function Header() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52">
-                    <div className="px-3 py-2">
+                    <div className="px-3 py-2 relative">
                       <p className="text-sm font-medium truncate">
                         {session.user.name}
                       </p>
                       <p className="text-xs text-[#71717a] truncate">
                         {session.user.email}
                       </p>
+
+                      <span className="text-[9px] absolute top-1 right-1 p-1 bg-emerald-100 text-emerald-600 tracking-widest animate-pulse">
+                        {session.user.role}
+                      </span>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2"
+                        href={`${session.user.role === "ADMIN" ? "/admin" : "/dashboard"}`}
+                        className="flex items-center gap-2 hover:cursor-pointer"
                       >
                         <HugeiconsIcon
                           icon={Layout01Icon}
@@ -302,7 +309,10 @@ export function Header() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/orders" className="flex items-center gap-2">
+                      <Link
+                        href="/orders"
+                        className="flex items-center gap-2 hover:cursor-pointer"
+                      >
                         <HugeiconsIcon
                           icon={PackageIcon}
                           size={24}
@@ -316,7 +326,7 @@ export function Header() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => signOut({ callbackUrl: "/" })}
-                      className="text-rose-600 focus:text-rose-400 flex items-center gap-2"
+                      className="text-rose-600 focus:text-rose-400 flex items-center gap-2 hover:cursor-pointer"
                     >
                       <HugeiconsIcon
                         icon={Logout01Icon}
@@ -332,7 +342,7 @@ export function Header() {
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm font-medium hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 transition-all"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm font-medium hover:bg-muted hover:text-foreground hover:cursor-pointer aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 transition-all"
                 >
                   <HugeiconsIcon
                     icon={UserIcon}

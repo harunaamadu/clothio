@@ -76,7 +76,7 @@ export default async function HomeLayout() {
 
           {/* Right scrolling content */}
           <main className="grid gap-10">
-            <div className="grid max-sm:grid-cols-1 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid max-sm:grid-cols-1 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-6">
               {/* 1. render new products with minimal cards in 1 column */}
               <NewArrivals products={newArrivals} />
 

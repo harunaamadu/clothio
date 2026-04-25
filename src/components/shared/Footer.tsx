@@ -83,7 +83,7 @@ export function Footer() {
               {brandDirectory.map((section) => (
                 <div
                   key={section.category}
-                  className="flex flex-wrap gap-2 tracking-wide leading-loose"
+                  className="flex flex-wrap gap-2 tracking-wide leading-normal not-last:mb-4"
                   data-reveal
                 >
                   <span className="font-semibold uppercase">
@@ -180,7 +180,7 @@ export function Footer() {
               <p className="text-xs">
                 ©{new Date().getFullYear()}{" "}
                 <em className="font-semibold text-stone-900">
-                  {process.env.NEXTAUTH_WEBSITE_NAME || "Clothio Fallback"}
+                  {process.env.WEBSITE_NAME || "Clothio"}
                 </em>
                 . All rights reserved.
               </p>
@@ -215,7 +215,7 @@ export function Footer() {
         </div>
       </footer>
 
-      <p className="py-4 text-center text-sm text-muted-foreground">
+      <p className="p-4 text-center text-sm text-muted-foreground">
         <span className="font-semibold text-primary">
           {process.env.NEXT_PUBLIC_WEBSITE_NAME}
         </span>{" "}

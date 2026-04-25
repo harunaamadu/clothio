@@ -8,7 +8,10 @@ import {
   ArrowRight01Icon,
   CancelIcon,
   Menu01Icon,
+  Search01Icon,
+  SearchList01Icon,
 } from "@hugeicons/core-free-icons";
+import { Button } from "../ui/button";
 
 interface NavLink {
   label: string;
@@ -16,30 +19,42 @@ interface NavLink {
   children?: { label: string; href: string }[];
 }
 
-export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
+interface MobileNavProps {
+  navLinks: NavLink[];
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export function MobileNav({
+  navLinks,
+  searchQuery,
+  setSearchQuery,
+}: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
     <>
-      <button
-        className="lg:hidden p-2 rounded-md hover:bg-[#f4f4f5] transition-colors"
+      <Button
+        variant={`ghost`}
+        size={`icon-lg`}
+        className="lg:hidden "
         onClick={() => setOpen(true)}
         aria-label="Open menu"
       >
         <HugeiconsIcon
-          icon={Menu01Icon}
+          icon={SearchList01Icon}
           size={24}
           color="currentColor"
           strokeWidth={1.5}
           className="w-5 h-5"
         />
-      </button>
+      </Button>
 
       {/* Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 min-h-screen z-50 bg-black/40 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         />
       )}
@@ -47,14 +62,15 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
       {/* Drawer */}
       <div
         className={cn(
-          "fixed top-0 left-0 z-50 h-full w-72 bg-white shadow-2xl flex flex-col transition-transform duration-300",
+          "fixed top-0 left-0 z-50 min-h-screen w-72 bg-background shadow-2xl flex flex-col transition-transform duration-300",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex items-center justify-between p-4 border-b border-border/30">
-          <span className="font-display text-xl font-bold">
+          <h3 className="text-xl font-bold">
             Clot<span className="text-primary">hio</span>
-          </span>
+          </h3>
+
           <button
             onClick={() => setOpen(false)}
             className="p-1.5 rounded-md hover:bg-[#f4f4f5] transition-colors"
@@ -67,6 +83,30 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
               className="w-5 h-5"
             />
           </button>
+        </div>
+
+        <div className="relative p-4">
+          <div className="flex items-center border border-[#e4e4e7] rounded-full px-3 py-1.5 bg-[#f4f4f5]">
+            <HugeiconsIcon
+              icon={Search01Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+              className="w-4 h-4 text-[#71717a] shrink-0"
+            />
+            <input
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && searchQuery.trim()) {
+                  window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
+                }
+              }}
+              placeholder="Search products..."
+              className="ml-2 bg-transparent text-sm outline-none w-40 placeholder:text-[#a1a1aa]"
+            />
+          </div>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-2">
@@ -131,20 +171,13 @@ export function MobileNav({ navLinks }: { navLinks: NavLink[] }) {
         </nav>
 
         <div className="p-4 border-t border-[#e4e4e7] space-y-2">
-          <Link
-            href="/login"
-            onClick={() => setOpen(false)}
-            className="block w-full text-center py-2.5 text-sm font-medium border border-[#1a1a2e] rounded-full hover:bg-[#1a1a2e] hover:text-white transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/register"
-            onClick={() => setOpen(false)}
-            className="block w-full text-center py-2.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-[#d63651] transition-colors"
-          >
-            Create Account
-          </Link>
+          <p className="text-xs">
+            ©{new Date().getFullYear()}{" "}
+            <em className="font-semibold text-stone-900">
+              {process.env.WEBSITE_NAME || "Clothio"}
+            </em>
+            . All rights reserved.
+          </p>
         </div>
       </div>
     </>
